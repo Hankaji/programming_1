@@ -22,10 +22,11 @@ public class MenuEvent {
         System.out.println(displayName);
     }
 
-    public String getName() {
+    public String getDisplayName() {
         if (subMenu != null) {
             return displayName + " >";
         }
         return displayName;
     }
 }
+

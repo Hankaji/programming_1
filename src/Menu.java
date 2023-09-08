@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
-    List<MenuEvent> eventList;
+    private final List<MenuEvent> eventList;
 
     public Menu() {
         eventList = new ArrayList<>();
@@ -27,7 +27,7 @@ public class Menu {
 
             int width = 3 - String.valueOf(index).length();
 
-            System.out.printf("%d)%-" + (width > 0 ? width : 1) + "s: %s%n", index, "", e.getName());
+            System.out.printf("%d)%-" + (width > 0 ? width : 1) + "s: %s%n", index, "", e.getDisplayName());
             index++;
         }
 
@@ -38,7 +38,7 @@ public class Menu {
         Scanner input = new Scanner(System.in);
         int choice = 1;
         
-        while (choice > 0 || choice <= eventList.size()) {
+        while (true) {
             display();
             System.out.print("Enter choice: ");
             choice = input.nextInt();
@@ -47,6 +47,7 @@ public class Menu {
                 System.exit(0);
 
             } else if (choice == 0) {
+                input.close();
                 return;
 
             } else if (choice < 0 || choice > eventList.size()) {
@@ -57,6 +58,5 @@ public class Menu {
             eventList.get(choice - 1).run();
         }
 
-        input.close();
     }
 }
