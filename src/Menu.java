@@ -31,32 +31,39 @@ public class Menu {
             index++;
         }
 
-        System.out.println("--------------------");
+        Divider.printDivider();
     }
 
     public void run() {
         Scanner input = new Scanner(System.in);
         int choice = 1;
         
-        while (choice > 0 || choice <= eventList.size()) {
+        while (true) {
             display();
             System.out.print("Enter choice: ");
             choice = input.nextInt();
             if (choice == -1) {
-                input.close();
-                System.exit(0);
+                System.out.print("Are you sure? (y/n): ");
+                char confirmation = input.next().charAt(0);
+                if (confirmation == 'y' || confirmation == 'Y') {
+                    input.close();
+                    System.exit(0);
+                }
+
+                Divider.printDivider();
+                continue;
 
             } else if (choice == 0) {
                 return;
 
             } else if (choice < 0 || choice > eventList.size()) {
                 System.out.println("Invalid choice.");
+                Divider.printDivider();
                 continue;
             }
 
             eventList.get(choice - 1).run();
+            Divider.printDivider();
         }
-
-        input.close();
     }
 }

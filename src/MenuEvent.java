@@ -1,6 +1,6 @@
 public class MenuEvent {
-    private String displayName;
-    private Runnable action;
+    private final String displayName;
+    private final Runnable action;
     private Menu subMenu;
 
     public MenuEvent(String displayName, Runnable action) {
@@ -10,7 +10,7 @@ public class MenuEvent {
 
     public MenuEvent(String displayName, Menu subMenu) {
         this.displayName = displayName;
-        this.action = () -> subMenu.run();
+        this.action = subMenu::run;
         this.subMenu = subMenu;
     }
 
