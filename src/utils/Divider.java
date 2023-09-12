@@ -1,3 +1,5 @@
+package utils;
+
 public class Divider {
     public static void printDivider() {
         System.out.println("--------------------");

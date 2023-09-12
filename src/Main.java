@@ -1,6 +1,22 @@
+import menu.Menu;
+import menu.MenuEvent;
+import user.PortManager;
+import utils.Holder;
+
 public class Main {
     public static void main(String[] args) {
-        setUpMenu();
+//        setUpMenu();
+        PortManager john = new PortManager("John", "1234");
+        PortManager slave = new PortManager("Slave", "1234");
+        PortManager reggin = new PortManager("Reggin", "1234");
+
+        Holder<PortManager> portHolder = new Holder<>();
+        portHolder.addToList(john);
+        portHolder.addToList(slave);
+        portHolder.addToList(reggin);
+
+        System.out.println(portHolder.getList());
+        portHolder.saveList("portManagerList.txt");
     }
 
     private static void setUpMenu() {
@@ -88,7 +104,7 @@ public class Main {
         mainMenu.addEvent(containers);
         mainMenu.addEvent(managers);
 
-        // Create Menu Events
+        // Create menu.Menu Events
         MenuEvent load = new MenuEvent("Load", () -> {
             System.out.println("Load");
         });

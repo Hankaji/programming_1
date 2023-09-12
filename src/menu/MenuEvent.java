@@ -1,3 +1,5 @@
+package menu;
+
 public class MenuEvent {
     private final String displayName;
     private final Runnable action;
