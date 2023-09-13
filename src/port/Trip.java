@@ -1,0 +1,79 @@
+package port;
+
+import vehicle.*;
+
+import java.util.Date;
+
+public class Trip {
+    private String ID;
+    private Vehicle vehicleUsed;
+    private Port startPort;
+    private Port endPort;
+    private Date departureDate;
+    private Date arrivalDate;
+    private TRIP_STATUS status;
+
+    public Trip(String ID, Vehicle vehicleUsed, Port startPort, Port endPort) {
+        this.ID = ID;
+        this.vehicleUsed = vehicleUsed;
+        this.startPort = startPort;
+        this.endPort = endPort;
+        this.departureDate = new Date();
+        this.status = TRIP_STATUS.ARRIVING;
+    }
+
+    // Display date, month and year from a date object
+    public static String displayDate(Date date) {
+        String[] dateArr = date.toString().split(" ");
+        return dateArr[3] + " " + dateArr[2] + " " + dateArr[1] + " " + dateArr[5];
+    }
+
+    public void setArrivalDate() {
+        this.arrivalDate = new Date();
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public Vehicle getVehicleUsed() {
+        return vehicleUsed;
+    }
+
+    public Port getStartPort() {
+        return startPort;
+    }
+
+    public Port getEndPort() {
+        return endPort;
+    }
+
+    public Date getDepartureDate() {
+        return departureDate;
+    }
+
+    public Date getArrivalDate() {
+        return arrivalDate;
+    }
+
+    public TRIP_STATUS getStatus() {
+        return status;
+    }
+
+    public void setStatus(TRIP_STATUS status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Trip{" +
+                "ID: '" + ID + '\'' +
+                ", vehicleUsed: " + vehicleUsed.getName() +
+                ", startPort: " + startPort.getName() +
+                ", endPort: " + endPort.getName() +
+                ", departureDate: " + displayDate(departureDate) +
+                ", arrivalDate: " + displayDate(arrivalDate) +
+                ", status: " + status +
+                '}';
+    }
+}

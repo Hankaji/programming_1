@@ -31,7 +31,7 @@ public class Menu {
 
             int width = 3 - String.valueOf(index).length();
 
-            System.out.printf("%d)%-" + (width > 0 ? width : 1) + "s: %s%n", index, "", e.getName());
+            System.out.printf("%d)%-" + (width > 0 ? width : 1) + "s: %s%n", index, "", e.getDisplayName());
             index++;
         }
 

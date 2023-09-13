@@ -3,7 +3,7 @@ import menu.Menu;
 
 public class PortManager extends User {
 
-//    private Port currentPort;
+//    private port currentPort;
 
     public PortManager(String name, String password) {
         super(name, password);
