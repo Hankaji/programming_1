@@ -1,35 +1,47 @@
 package utils;
 
-import java.io.ObjectOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
 
 public class Holder<T> implements Serializable {
 
     List<T> list;
 
     public Holder() {
-        list = new ArrayList<>();
+        this.list = new ArrayList<>();
     }
 
     public Holder(ArrayList<T> list) {
         this.list = list;
     }
 
-    public void populateList(ArrayList<T> list) {
-        this.list = list;
+    public void saveList(String filename) {
+        // add path to filename and write object to file
+        filename = "./src/data/" + filename;
+        try (FileOutputStream fos = new FileOutputStream(filename);
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(this);
+            System.out.println("List saved to " + filename + " successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error saving list to " + filename);
+        }
     }
 
-    public void saveList(String fileName) {
-        String path = "../../data/" + fileName;
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName))) {
-            out.writeObject(this);
-            System.out.println("Object serialized and saved to" + fileName + " successfully!");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public void populateList(String filename) {
+        // add path to filename
+        filename = "./src/data/" + filename;
+        // write from file to object
+        try (FileInputStream fis = new FileInputStream(filename);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            Holder<T> holder = (Holder<T>) ois.readObject();
+            this.list = holder.getList();
+            System.out.println("List populated from " + filename + " successfully!");
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            System.err.println("Error populating list from " + filename);
         }
     }
 

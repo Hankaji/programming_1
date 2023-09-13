@@ -2,11 +2,12 @@ package menu;
 
 import utils.Divider;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Menu {
+public class Menu implements Serializable {
     List<MenuEvent> eventList;
 
     public Menu() {

@@ -2,9 +2,10 @@ package port;
 
 import vehicle.*;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Trip {
+public class Trip implements Serializable {
     private String ID;
     private Vehicle vehicleUsed;
     private Port startPort;

@@ -1,6 +1,8 @@
 package menu;
 
-public class MenuEvent {
+import java.io.Serializable;
+
+public class MenuEvent implements Serializable {
     private final String displayName;
     private final Runnable action;
     private Menu subMenu;

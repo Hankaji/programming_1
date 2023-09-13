@@ -1,6 +1,8 @@
 package port;
 
-public enum TRIP_STATUS {
+import java.io.Serializable;
+
+public enum TRIP_STATUS implements Serializable {
     ARRIVING,
     ARRIVED
 }

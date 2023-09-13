@@ -1,6 +1,8 @@
 package port;
 
-public class Location {
+import java.io.Serializable;
+
+public class Location implements Serializable {
     private Double latitude;    // -90 to 90
     private Double longitude;   // -180 to 180
 

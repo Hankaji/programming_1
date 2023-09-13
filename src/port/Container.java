@@ -1,6 +1,8 @@
 package port;
 
-public class Container {
+import java.io.Serializable;
+
+public class Container implements Serializable {
     private String ID;
     private Double weight;
     private final CONTAINER_TYPE CONTAINERType;

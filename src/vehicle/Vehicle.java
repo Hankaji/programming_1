@@ -1,9 +1,11 @@
 package vehicle;
 
 import port.*;
+
+import java.io.Serializable;
 import java.util.List;
 
-public abstract class Vehicle {
+public abstract class Vehicle implements Serializable {
     // private attributes of the class
     // String name
     // String ID

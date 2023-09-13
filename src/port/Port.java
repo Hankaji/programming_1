@@ -1,5 +1,8 @@
 package port;
-public class Port {
+
+import java.io.Serializable;
+
+public class Port implements Serializable {
     private String ID;
     private String name;
     private Location location;

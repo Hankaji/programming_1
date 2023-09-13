@@ -1,6 +1,8 @@
 package utils;
 
-public class Divider {
+import java.io.Serializable;
+
+public class Divider implements Serializable {
     public static void printDivider() {
         System.out.println("--------------------");
     }
