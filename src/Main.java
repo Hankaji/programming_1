@@ -11,6 +11,7 @@ import java.util.Scanner;
 import port.*;
 import vehicle.*;
 
+import javax.xml.crypto.Data;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -132,18 +133,25 @@ public class Main {
         MenuEvent addBasicTruck = new MenuEvent("Basic Truck", () -> addVehicle("Basic Truck"));
         MenuEvent addReeferTruck = new MenuEvent("Reefer Truck", () -> addVehicle("Reefer Truck"));
         MenuEvent addTankerTruck = new MenuEvent("Tanker Truck", () -> addVehicle("Tanker Truck"));
+
         trucksMenu.addEvent(addBasicTruck);
         trucksMenu.addEvent(addReeferTruck);
         trucksMenu.addEvent(addTankerTruck);
+
         MenuEvent addTrucks = new MenuEvent("Truck", trucksMenu);
+
         addVehicleMenu.addEvent(addShipEvent);
         addVehicleMenu.addEvent(addTrucks);
 
         // Creating port events where it adds, removes and views ports
         MenuEvent addPortEvent = new MenuEvent("Add port", Main::addPort);
         MenuEvent removePort = new MenuEvent("Remove port", () -> {
-            System.out.println("Remove port");
-        });
+            Scanner input = new Scanner(System.in);
+            System.out.println("Please enter the port ID (p-*): ");
+            String portID = input.nextLine();
+            Database.portHolder.removeFromMap(portID);
+        } );
+
         MenuEvent viewPorts = new MenuEvent("View Ports", Database.portHolder::printList);
 
         MenuEvent removeVehicle = new MenuEvent("Remove vehicle", () -> {
@@ -158,11 +166,12 @@ public class Main {
             System.out.println("Add Container");
         });
         MenuEvent removeContainer = new MenuEvent("Remove Container", () -> {
-            System.out.println("Remove Container");
+            Scanner input = new Scanner(System.in);
+            System.out.println("Please enter the container ID (c-*): ");
+            String containerID = input.nextLine();
+            Database.containerHolder.removeFromMap(containerID);
         });
-        MenuEvent viewContainers = new MenuEvent("View Containers", () -> {
-            System.out.println("View Containers");
-        });
+        MenuEvent viewContainers = new MenuEvent("View Containers", Database.containerHolder::printList);
 
         // Creating manager events where it adds, removes and views managers
         MenuEvent addManager = new MenuEvent("Add Manager", Main::addManager);
@@ -341,6 +350,13 @@ public class Main {
         }
         input.close();
     }
+
+
+
+    
+
+// TESTING DATA, NO RELEVANT CODE BELOW HERE
+
 //    public static void TestPorts() {
 //        // Create Manchester port
 //        Port manchesterPort = new Port("p-1", "Manchester Port", 53.4808, 2.2426, 5000000.0, true);
