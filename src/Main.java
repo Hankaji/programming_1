@@ -4,6 +4,7 @@ import menu.MenuEvent;
 import user.*;
 import utils.Divider;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 
@@ -101,12 +102,14 @@ public class Main {
                 Database.vehicleHolder.saveList("vehiclesData.txt");
                 Database.portManagerHolder.saveList("portManagersData.txt");
                 Database.tripHolder.saveList("tripsData.txt");
+                try {
+                    AccountDatabase.saveToFile();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
 
             }
         });
-
-        // Creating a scanner object
-        Scanner input = new Scanner(System.in);
 
         // Creating sub menus
         Menu portsMenu = new Menu();
@@ -121,141 +124,23 @@ public class Main {
         MenuEvent vehicles = new MenuEvent("Vehicles", vehiclesMenu);
         MenuEvent containers = new MenuEvent("Containers", containersMenu);
         MenuEvent managers = new MenuEvent("Managers", managersMenu);
-        MenuEvent addVehicle = new MenuEvent("Add Vehicle", addVehicleMenu);
+        MenuEvent addVehicleEvent = new MenuEvent("Add Vehicle", addVehicleMenu);
 
         // Create menu events for Vehicles
-        MenuEvent addShip = new MenuEvent("Ship", () -> {
-            System.out.println("Please enter the ship's name: ");
-            String vehicleName = input.nextLine();
-            System.out.println("Please enter the ship's ID: ");
-            String vehicleID = input.nextLine();
-            System.out.println("Please enter the ship's current fuel: ");
-            Double vehicleCurrentFuel = input.nextDouble();
-            System.out.println("Please enter the ship's max fuel: ");
-            Double vehicleMaxFuel = input.nextDouble();
-            System.out.println("Please enter the ship's carrying capacity: ");
-            Double vehicleCarryingCapacity = input.nextDouble();
-            System.out.println("Please enter the ship's port ID (p-*): ");
-            String vehiclePortID = input.nextLine();
-            Port vehiclePort;
-//            for (Port port : Database.portHolder.getMap()) {
-//                if (port.getID().equals(vehiclePortID)) {
-//                    vehiclePort = port;
-//                }
-//            }
-            vehiclePort = Database.portHolder.getMap().getOrDefault(vehiclePortID, null);
-            Ship ship = new Ship(vehicleID, vehicleName, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
-        });
+        MenuEvent addShipEvent = new MenuEvent("Ship", () -> addVehicle("Ship"));
 
-        MenuEvent addBasicTruck = new MenuEvent("Basic Truck", () -> {
-            System.out.println("Please enter the basic truck's name: ");
-            String vehicleName = input.nextLine();
-            System.out.println("Please enter the basic truck's ID: ");
-            String vehicleID = input.nextLine();
-            System.out.println("Please enter the basic truck's current fuel: ");
-            Double vehicleCurrentFuel = input.nextDouble();
-            System.out.println("Please enter the basic truck's max fuel: ");
-            Double vehicleMaxFuel = input.nextDouble();
-            System.out.println("Please enter the basic truck's carrying capacity: ");
-            Double vehicleCarryingCapacity = input.nextDouble();
-            Port vehiclePort;
-            input.nextLine();
-            while (true) {
-                // get port id
-                System.out.println("Please enter the basic truck's port id (p-*): ");
-                String vehiclePortID = input.nextLine();
-                // get port
-                vehiclePort = Database.portHolder.getMap().getOrDefault(vehiclePortID, null);
-                if (vehiclePort == null) {
-                    System.out.println("Port not found. Try Again!");
-                    continue;
-                }
-                break;
-            }
-            BasicTruck basicTruck = new BasicTruck(vehicleID, vehicleName, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
-            Database.vehicleHolder.addItem(vehicleID, basicTruck);
-        });
-        MenuEvent addReeferTruck = new MenuEvent("Reefer Truck", () -> {
-            System.out.println("Please enter the reefer truck's name: ");
-            String vehicleName = input.nextLine();
-            System.out.println("Please enter the reefer truck's ID: ");
-            String vehicleID = input.nextLine();
-            System.out.println("Please enter the reefer truck's current fuel: ");
-            Double vehicleCurrentFuel = input.nextDouble();
-            System.out.println("Please enter the reefer truck's max fuel: ");
-            Double vehicleMaxFuel = input.nextDouble();
-            System.out.println("Please enter the reefer truck's carrying capacity: ");
-            Double vehicleCarryingCapacity = input.nextDouble();
-            Port vehiclePort;
-            input.nextLine();
-            while (true) {
-                // get port id
-                System.out.println("Please enter the basic truck's port id (p-*): ");
-                String vehiclePortID = input.nextLine();
-                // get port
-                vehiclePort = Database.portHolder.getMap().getOrDefault(vehiclePortID, null);
-                if (vehiclePort == null) {
-                    System.out.println("Port not found. Try Again!");
-                    continue;
-                }
-                break;
-            }
-            ReeferTruck reeferTruck = new ReeferTruck(vehicleID, vehicleName, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
-            Database.vehicleHolder.addItem(vehicleID, reeferTruck);
-        });
-        MenuEvent addTankerTruck = new MenuEvent("Tanker Truck", () -> {
-            System.out.println("Please enter the tanker truck's name: ");
-            String vehicleName = input.nextLine();
-            System.out.println("Please enter the tanker truck's ID: ");
-            String vehicleID = input.nextLine();
-            System.out.println("Please enter the tanker truck's current fuel: ");
-            Double vehicleCurrentFuel = input.nextDouble();
-            System.out.println("Please enter the tanker truck's max fuel: ");
-            Double vehicleMaxFuel = input.nextDouble();
-            System.out.println("Please enter the tanker truck's carrying capacity: ");
-            Double vehicleCarryingCapacity = input.nextDouble();
-            Port vehiclePort;
-            input.nextLine();
-            while (true) {
-                // get port id
-                System.out.println("Please enter the basic truck's port id (p-*): ");
-                String vehiclePortID = input.nextLine();
-                // get port
-                vehiclePort = Database.portHolder.getMap().getOrDefault(vehiclePortID, null);
-                if (vehiclePort == null) {
-                    System.out.println("Port not found. Try Again!");
-                    continue;
-                }
-                break;
-            }
-            TankerTruck tankerTruck = new TankerTruck(vehicleID, vehicleName, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
-            Database.vehicleHolder.addItem(vehicleID, tankerTruck);
-        });
-
+        MenuEvent addBasicTruck = new MenuEvent("Basic Truck", () -> addVehicle("Basic Truck"));
+        MenuEvent addReeferTruck = new MenuEvent("Reefer Truck", () -> addVehicle("Reefer Truck"));
+        MenuEvent addTankerTruck = new MenuEvent("Tanker Truck", () -> addVehicle("Tanker Truck"));
         trucksMenu.addEvent(addBasicTruck);
         trucksMenu.addEvent(addReeferTruck);
         trucksMenu.addEvent(addTankerTruck);
         MenuEvent addTrucks = new MenuEvent("Truck", trucksMenu);
-        addVehicleMenu.addEvent(addShip);
+        addVehicleMenu.addEvent(addShipEvent);
         addVehicleMenu.addEvent(addTrucks);
 
         // Creating port events where it adds, removes and views ports
-        MenuEvent addPort = new MenuEvent("Add port", () -> {
-            System.out.println("Please enter the port ID (p-*): ");
-            String portID = input.nextLine();
-            System.out.println("Please enter the port name: ");
-            String portName = input.nextLine();
-            System.out.println("Please enter the port latitude: ");
-            Double portLatitude = input.nextDouble();
-            System.out.println("Please enter the port longitude: ");
-            Double portLongitude = input.nextDouble();
-            System.out.println("Please enter the port fuel capacity: ");
-            Double portFuelCapacity = input.nextDouble();
-            System.out.println("Please enter the port landing ability (True/ False): ");
-            Boolean portLandingAbility = input.nextBoolean();
-            Port port = new Port(portID, portName, portLatitude, portLongitude, portFuelCapacity, portLandingAbility);
-            Database.portHolder.addItem(portID, port);
-        });
+        MenuEvent addPortEvent = new MenuEvent("Add port", Main::addPort);
         MenuEvent removePort = new MenuEvent("Remove port", () -> {
             System.out.println("Remove port");
         });
@@ -280,23 +165,20 @@ public class Main {
         });
 
         // Creating manager events where it adds, removes and views managers
-        MenuEvent addManager = new MenuEvent("Add Manager", () -> {
-            System.out.println("Add Manager");
-        });
+        MenuEvent addManager = new MenuEvent("Add Manager", Main::addManager);
+
         MenuEvent removeManager = new MenuEvent("Remove Manager", () -> {
             System.out.println("Remove Manager");
         });
-        MenuEvent viewManagers = new MenuEvent("View Managers", () -> {
-            System.out.println("View Managers");
-        });
+        MenuEvent viewManagers = new MenuEvent("View Managers", AccountDatabase::displayAllUsers);
 
         // Adding events to sub port menu
-        portsMenu.addEvent(addPort);
+        portsMenu.addEvent(addPortEvent);
         portsMenu.addEvent(removePort);
         portsMenu.addEvent(viewPorts);
 
         // Adding events to sub vehicle menu
-        vehiclesMenu.addEvent(addVehicle);
+        vehiclesMenu.addEvent(addVehicleEvent);
         vehiclesMenu.addEvent(removeVehicle);
         vehiclesMenu.addEvent(viewVehicles);
 
@@ -372,6 +254,92 @@ public class Main {
         portManagerMenu.addEvent(tripFromRange);
     }
 
+    private static void addManager() {
+        Scanner input = new Scanner(System.in);
+        System.out.println("Please enter the manager's username: ");
+        String managerUsername = input.nextLine();
+        System.out.println("Please enter the manager's password: ");
+        String managerPassword = input.nextLine();
+        Port port;
+        while (true) {
+
+            System.out.print("Please enter the port manager's current port ID (p-*): ");
+            String vehiclePortID = input.nextLine();
+
+            port = Database.portHolder.getMap().getOrDefault(vehiclePortID, null);
+            if (port == null) {
+                System.out.println("Port not found. Try Again!");
+                continue;
+            }
+            break;
+        }
+        PortManager portManager = new PortManager(managerUsername, managerPassword, port);
+        AccountDatabase.addUser(portManager);
+
+    }
+
+
+    private static void addPort() {
+        Scanner input = new Scanner(System.in);
+        System.out.println("Please enter the port ID (p-*): ");
+        String portID = input.nextLine();
+        System.out.println("Please enter the port's name: ");
+        String portName = input.nextLine();
+        System.out.println("Please enter the port's latitude: ");
+        Double portLatitude = input.nextDouble();
+        System.out.println("Please enter the port's longitude: ");
+        Double portLongitude = input.nextDouble();
+        System.out.println("Please enter the port's fuel capacity: ");
+        Double portFuelCapacity = input.nextDouble();
+        System.out.println("Please enter the port's landing ability (True/ False): ");
+        Boolean portLandingAbility = input.nextBoolean();
+        Port port = new Port(portID, portName, portLatitude, portLongitude, portFuelCapacity, portLandingAbility);
+        Database.portHolder.addItem(portID, port);
+    }
+     private static void addVehicle(String vehicleType) {
+        Scanner input = new Scanner(System.in);
+
+        System.out.printf("Please enter the %s's name: ", vehicleType);
+        String vehicleName = input.nextLine();
+        System.out.printf("Please enter the %s's ID " + (Objects.equals(vehicleType, "Ship") ? "(sh-*)" : (Objects.equals(vehicleType, "Basic Truck") || Objects.equals(vehicleType, "Reefer Truck") || Objects.equals(vehicleType, "Tanker Truck")) ? "(tr-*)" : null) + ": ", vehicleType);
+        String vehicleID = input.nextLine();
+        System.out.printf("Please enter the %s's current fuel: ", vehicleType);
+        Double vehicleCurrentFuel = input.nextDouble();
+        System.out.printf("Please enter the %s's max fuel: ", vehicleType);
+        Double vehicleMaxFuel = input.nextDouble();
+        System.out.printf("Please enter the %s's carrying capacity: ", vehicleType);
+        Double vehicleCarryingCapacity = input.nextDouble();
+        Port vehiclePort;
+        input.nextLine();
+        while (true) {
+
+            System.out.printf("Please enter the %s's current port ID (p-*): ", vehicleType);
+            String vehiclePortID = input.nextLine();
+
+            vehiclePort = Database.portHolder.getMap().getOrDefault(vehiclePortID, null);
+            if (vehiclePort == null) {
+                System.out.println("Port not found. Try Again!");
+                continue;
+            }
+            break;
+        }
+
+
+        if (Objects.equals(vehicleType, "Ship")) {
+            Ship ship = new Ship(vehicleID, vehicleName, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
+            Database.vehicleHolder.addItem(vehicleID, ship);
+        } else if (Objects.equals(vehicleType, "Basic Truck")) {
+            BasicTruck basicTruck = new BasicTruck(vehicleID, vehicleName, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
+            Database.vehicleHolder.addItem(vehicleID, basicTruck);
+        } else if (Objects.equals(vehicleType, "Reefer Truck")) {
+            ReeferTruck reeferTruck = new ReeferTruck(vehicleID, vehicleName, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
+            Database.vehicleHolder.addItem(vehicleID, reeferTruck);
+        } else if (Objects.equals(vehicleType, "Tanker Truck")) {
+            TankerTruck tankerTruck = new TankerTruck(vehicleID, vehicleName, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
+            Database.vehicleHolder.addItem(vehicleID, tankerTruck);
+        }
+        input.close();
+    }
 //    public static void TestPorts() {
 //        // Create Manchester port
 //        Port manchesterPort = new Port("p-1", "Manchester Port", 53.4808, 2.2426, 5000000.0, true);
