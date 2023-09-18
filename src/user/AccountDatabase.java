@@ -29,12 +29,13 @@ public class AccountDatabase {
         usersInstance.remove(username);
     }
 
+    @SuppressWarnings("unchecked")
     private static Map<String, User> loadData() {
         String filePath = "src/data/accounts.txt";
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath))) {
 
             // Access the data in the loaded Map
-//            System.out.println("Accounts loaded successfully:");
+            //System.out.println("Accounts loaded successfully:");
 
             return (Map<String, User>) in.readObject();
 
