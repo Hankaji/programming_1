@@ -7,5 +7,4 @@ public class Admin extends User {
         super(name, password);
         this.userMenu = new Menu();
     }
-
 }

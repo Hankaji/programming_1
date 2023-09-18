@@ -1,6 +1,7 @@
 import menu.Menu;
 import menu.MenuEvent;
-import user.PortManager;
+import user.*;
+import utils.Divider;
 import utils.Holder;
 
 
@@ -8,28 +9,70 @@ import port.*;
 import vehicle.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
+import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-//        setUpMenu();
-//        PortManager john = new PortManager("John", "1234");
-//        PortManager slave = new PortManager("Slave", "1234");
-//        PortManager reggin = new PortManager("Reggin", "1234");
-//
-//        Holder<PortManager> portHolder = new Holder<>();
-//        portHolder.addToList(john);
-//        portHolder.addToList(slave);
-//        portHolder.addToList(reggin);
-//
-//        System.out.println(portHolder.getList());
-//        portHolder.saveList("portManagerList.txt");
-        TestPorts();
+    private static final Menu adminMenu = new Menu();
+
+    public static void main(String[] args) throws IOException {
+//          Map<String, User> test = AccountDatabase.getInstance();
+
+//          AccountDatabase.addUser(new Admin("admin", "admin"));
+//          AccountDatabase.addUser(new PortManager("managerA", "managerA"));
+
+//          System.out.println(test);
+
+//          AccountDatabase.saveToFile();
+        setUpMenu();
+        User loggedUser = homePage();
+        if (loggedUser instanceof Admin) {
+            adminMenu.run();
+        } else if (loggedUser instanceof PortManager) {
+            return;
+        }
+    }
+
+    private static User homePage() throws FileNotFoundException {
+        System.out.println("COSC2081 GROUP ASSIGNMENT");
+        System.out.println("CONTAINER PORT MANAGEMENT SYSTEM");
+        System.out.println("Instructor: Mr. Minh Vu & Dr. Phong Ngo");
+        System.out.println("Group: Group23");
+        System.out.println("s3978081, Hoang Thai Phuc");
+        System.out.println("s3977773, Nguyen Hoang Minh");
+        System.out.println("s3977856, Hoang Nguyen Nhat Minh");
+        System.out.println("s3979367, Tran Nguyen Anh Minh");
+
+        Divider.printDivider();
+        System.out.println("Please login to an account");
+        Scanner input = new Scanner(System.in);
+        while (true) {
+            System.out.print("Username: ");
+            String username = input.nextLine();
+
+            System.out.print("Password: ");
+            String password = input.nextLine();
+
+            if (username.equals("-1") || password.equals("-1")) {
+                return null;
+            }
+
+            if (Authenticator.authenticate(username, password)) {
+                System.out.println("Login successful!");
+                Divider.printDivider();
+                System.out.println("Welcome back, " + username + "!");
+                return AccountDatabase.getInstance().get(username);
+            } else {
+                System.out.println("Login failed!");
+            }
+        }
     }
 
     private static void setUpMenu() {
-        Menu mainMenu = new Menu();
 
         // Creating sub menus
         Menu portsMenu = new Menu();
@@ -109,10 +152,10 @@ public class Main {
         managersMenu.addEvent(viewManagers);
 
         // Adding all  (sub menus) to main menu
-        mainMenu.addEvent(ports);
-        mainMenu.addEvent(vehicles);
-        mainMenu.addEvent(containers);
-        mainMenu.addEvent(managers);
+        adminMenu.addEvent(ports);
+        adminMenu.addEvent(vehicles);
+        adminMenu.addEvent(containers);
+        adminMenu.addEvent(managers);
 
         // Create menu.Menu Events
         MenuEvent load = new MenuEvent("Load", () -> {
@@ -141,17 +184,17 @@ public class Main {
         });
 
         // Adding all (menu events) to main menu
-        mainMenu.addEvent(load);
-        mainMenu.addEvent(unload);
-        mainMenu.addEvent(refuel);
-        mainMenu.addEvent(fuelUsed);
-        mainMenu.addEvent(containerWeight);
-        mainMenu.addEvent(shipsInPort);
-        mainMenu.addEvent(tripsInDay);
-        mainMenu.addEvent(tripFromRange);
+        adminMenu.addEvent(load);
+        adminMenu.addEvent(unload);
+        adminMenu.addEvent(refuel);
+        adminMenu.addEvent(fuelUsed);
+        adminMenu.addEvent(containerWeight);
+        adminMenu.addEvent(shipsInPort);
+        adminMenu.addEvent(tripsInDay);
+        adminMenu.addEvent(tripFromRange);
 
         // Running main menu
-        mainMenu.run();
+//        adminMenu.run();
     }
 
     public static void TestPorts() {

@@ -1,9 +1,11 @@
 package user;
 import menu.Menu;
 
-abstract class User {
-    private String name;
-    private String password;
+import java.io.Serializable;
+
+public abstract class User implements Serializable {
+    private final String name;
+    private final String password;
     protected Menu userMenu;
 
     public User(String name, String password) {
@@ -19,5 +21,13 @@ abstract class User {
     public String toString() {
         return "{name='" + name + '\'' +
                 ", password='" + password + "'}";
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }
