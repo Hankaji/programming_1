@@ -225,27 +225,28 @@ public class Main {
     }
 
     private static Port checkUserPort() {
+        // Check if user is a port manager, if so, return the port they are managing
         if (loggedUser instanceof PortManager) {
+            System.out.println("Current working port: " + ((PortManager) loggedUser).getCurrentPort().getName());
             return ((PortManager) loggedUser).getCurrentPort();
         }
+
+        // Else, ask the user to enter the port ID
         System.out.print("Please enter the port ID (p-*): ");
         String portID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value));
+        System.out.println("Current working port: " + Database.portHolder.getMap().get(portID).getName());
         return Database.portHolder.getMap().get(portID);
     }
 
     private static void getTotalContainersWeight() {
         // Get the port
-        System.out.print("Please enter the port ID (p-*): ");
-        String portID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value));
-        Port port = Database.portHolder.getMap().get(portID);
+        Port port = checkUserPort();
 
         // calculate the total weight
         Double totalWeight = 0.0;
-        for (Vehicle vehicle : Database.vehicleHolder.getMap().values()) {
-            if (vehicle.getCurrentPort().equals(port)) {
-                for (Container container : vehicle.getContainers()) {
-                    totalWeight += container.getWeight();
-                }
+        for (Container container : Database.containerHolder.getMap().values()) {
+            if (container.getCurrentPort().getName().equals(port.getName())) {
+                totalWeight += container.getWeight();
             }
         }
 
@@ -266,14 +267,15 @@ public class Main {
             }
         }
 
+        // Display information
+        System.out.println("Total ships in " + port.getName() + " is " + totalShips);
+
         // Print the ships
         ships.forEach(System.out::println);
-
-        System.out.println("Total ships in " + port.getName() + " is " + totalShips);
     }
 
     private static void removeVehicle() {
-        System.out.print("Please enter the vehicle ID (sh-* / btr-* / rtr-* / ttr-*): ");
+        System.out.print("Please enter the vehicle ID (sh-* / tr-*): ");
         String vehicleID = InputValidator.validateString(value -> Database.vehicleHolder.getMap().containsKey(value));
         Database.vehicleHolder.getMap().remove(vehicleID);
         System.out.println("Vehicle removed successfully!");
@@ -297,7 +299,11 @@ public class Main {
         int containerType = InputValidator.validateInt(value -> value <= 5 && value >= 1);
 
 
-        System.out.println("Please enter the current port id: ");
+        System.out.println("Please enter the start port id: ");
+        String startPortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value));
+        Port startPort = Database.portHolder.getMap().get(startPortID);
+
+        System.out.println("Please enter the start current id: ");
         String currentPortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value));
         Port currentPort = Database.portHolder.getMap().get(currentPortID);
 
@@ -305,7 +311,7 @@ public class Main {
         String destinationPortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value));
         Port destinationPort = Database.portHolder.getMap().get(destinationPortID);
 
-        Container container = new Container(containerID, containerWeight, CONTAINER_TYPE.values()[containerType - 1], currentPort, destinationPort);
+        Container container = new Container(containerID, containerWeight, CONTAINER_TYPE.values()[containerType - 1], startPort, currentPort, destinationPort);
         Database.containerHolder.addItem(containerID, container);
     }
 
