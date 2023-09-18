@@ -172,6 +172,7 @@ public class Main {
         });
         MenuEvent viewManagers = new MenuEvent("View Managers", AccountDatabase::displayAllUsers);
 
+
         // Adding events to sub port menu
         portsMenu.addEvent(addPortEvent);
         portsMenu.addEvent(removePort);
