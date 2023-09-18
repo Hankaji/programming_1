@@ -4,8 +4,8 @@ import menu.Menu;
 import java.io.Serializable;
 
 public abstract class User implements Serializable {
-    private final String name;
-    private final String password;
+    protected final String name;
+    protected final String password;
     protected Menu userMenu;
 
     public User(String name, String password) {

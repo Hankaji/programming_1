@@ -1,20 +1,19 @@
 package utils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.io.File;
+import java.util.*;
 
 public class Holder<T> implements Serializable {
 
-    List<T> list;
+//    List<T> list;
+    private final Map<String, T> map;
 
     public Holder() {
-        this.list = new ArrayList<>();
+        this.map = new HashMap<>();
     }
 
-    public Holder(ArrayList<T> list) {
-        this.list = list;
+    public Holder(Map<String, T> map) {
+        this.map = map;
     }
 
     public void saveList(String filename) {
@@ -23,40 +22,71 @@ public class Holder<T> implements Serializable {
         try (FileOutputStream fos = new FileOutputStream(filename);
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(this);
-            System.out.println("List saved to " + filename + " successfully!");
+            System.out.println("List saved to \"" + filename + "\" successfully!");
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Error saving list to " + filename);
         }
     }
 
-    public void populateList(String filename) {
+//    @SuppressWarnings("unchecked")
+//    public void populateList(String filename) {
+//        // add path to filename
+//        filename = "./src/data/" + filename;
+//        // write from file to object
+//        try (FileInputStream fis = new FileInputStream(filename);
+//             ObjectInputStream ois = new ObjectInputStream(fis)) {
+//            Holder<T> holder = (Holder<T>) ois.readObject();
+//            this.list = holder.getList();
+//            System.out.println("List populated from \"" + filename + "\" successfully!");
+//        } catch (IOException | ClassNotFoundException e) {
+////            e.printStackTrace();
+//            System.err.println("Error populating list from " + filename);
+//        }
+//    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Holder<T> fetchList(String filename) {
         // add path to filename
         filename = "./src/data/" + filename;
         // write from file to object
         try (FileInputStream fis = new FileInputStream(filename);
-             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            ObjectInputStream ois = new ObjectInputStream(fis)) {
             Holder<T> holder = (Holder<T>) ois.readObject();
-            this.list = holder.getList();
-            System.out.println("List populated from " + filename + " successfully!");
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("List populated from \"" + filename + "\" successfully!");
+            return holder;
+        } catch (IOException e) {
+//            e.printStackTrace();
+            System.out.println("\"" + filename + "\" not found! New file created");
+        } catch (ClassNotFoundException e) {
             System.err.println("Error populating list from " + filename);
         }
+        return new Holder<T>();
     }
 
-    public List<T> getList() {
-        return list;
+    public Map<String, T> getMap() {
+        return map;
     }
 
-    public void removeFromList(T item) {
-        list.remove(item);
+    public void removeFromMap(String name) {
+        map.remove(name);
     }
 
-    public void addToList(T item) {
-        list.add(item);
+    public void removeByValue(T valueToRemove) {
+
+        // Remove the entry
+        map.entrySet().removeIf(entry -> Objects.equals(valueToRemove, entry.getValue()));
     }
 
+    public void addItem(String name,T item) {
+        map.put(name,item);
+    }
 
+    public void printList() {
+        System.out.println("Map:");
+        for (Map.Entry<String, T> entry : map.entrySet()) {
+            System.out.println(entry.getValue());
+        }
+    }
 
 }

@@ -1,5 +1,7 @@
 package user;
 
+import utils.Divider;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +31,15 @@ public class AccountDatabase {
         usersInstance.remove(username);
     }
 
+    public static void displayAllUsers() {
+        Divider.printDivider();
+        System.out.println("All users:");
+        for (Map.Entry<String, User> entry : usersInstance.entrySet()) {
+            System.out.println(entry.getValue());
+        }
+        Divider.printDivider();
+    }
+
     @SuppressWarnings("unchecked")
     private static Map<String, User> loadData() {
         String filePath = "src/data/accounts.txt";
@@ -40,10 +51,30 @@ public class AccountDatabase {
             return (Map<String, User>) in.readObject();
 
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return null;
         }
     }
+
+//    private static Map<String, User> loadData() {
+//        String filePath = "src/data/accounts.txt";
+//        try (BufferedReader in = new BufferedReader(new FileReader(filePath))) {
+//
+//            String line;
+//            while ((line = in.readLine()) != null) {
+//                String[] data = line.split(",");
+//                String username = data[0];
+//                String password = data[1];
+//                String role = data[2];
+//
+//
+//            }
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
     public static void saveToFile() throws IOException {
         String filename = "src/data/accounts.txt";

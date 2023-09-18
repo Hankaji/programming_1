@@ -1,46 +1,47 @@
+import data.Database;
 import menu.Menu;
 import menu.MenuEvent;
 import user.*;
 import utils.Divider;
-import utils.Holder;
 
-import java.util.Optional;
 import java.util.Scanner;
 
 
 import port.*;
 import vehicle.*;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
-import java.util.Scanner;
 
 public class Main {
     private static final Menu adminMenu = new Menu();
+    private static final Menu portManagerMenu = new Menu();
+
+//    private static final Holder<Port> portHolder = new Holder<>();
+//    private static final Holder<Container> containerHolder = new Holder<>();
+//    private static final Holder<Vehicle> vehicleHolder = new Holder<>();
+//    private static final Holder<PortManager> portManagerHolder = new Holder<>();
+//    private static final Holder<Trip> tripHolder = new Holder<>();
 
     public static void main(String[] args) throws IOException {
-//          Map<String, User> test = AccountDatabase.getInstance();
-
-//          AccountDatabase.addUser(new Admin("admin", "admin"));
-//          AccountDatabase.addUser(new PortManager("managerA", "managerA"));
-
-//          System.out.println(test);
-
-//          AccountDatabase.saveToFile();
+        AccountDatabase.getInstance();
         setUpMenu();
-        User loggedUser = homePage();
+
+//        AccountDatabase.addUser(new Admin("admin", "admin"));
+
+        AccountDatabase.displayAllUsers();
+
+        // Authorization
+        User loggedUser = displayHomePage();
         if (loggedUser instanceof Admin) {
             adminMenu.run();
         } else if (loggedUser instanceof PortManager) {
-            return;
+            portManagerMenu.run();
         }
     }
 
-    private static User homePage() throws FileNotFoundException {
+    private static User displayHomePage() throws FileNotFoundException {
         System.out.println("COSC2081 GROUP ASSIGNMENT");
         System.out.println("CONTAINER PORT MANAGEMENT SYSTEM");
         System.out.println("Instructor: Mr. Minh Vu & Dr. Phong Ngo");
@@ -50,6 +51,7 @@ public class Main {
         System.out.println("s3977856, Hoang Nguyen Nhat Minh");
         System.out.println("s3979367, Tran Nguyen Anh Minh");
 
+        // Login
         Divider.printDivider();
         System.out.println("Please login to an account");
         Scanner input = new Scanner(System.in);
@@ -76,35 +78,30 @@ public class Main {
     }
 
     private static void setUpMenu() {
-        // Creating Holders
-        Holder<Port> PortHolder = new Holder<>();
-        Holder<Container> ContainerHolder = new Holder<>();
-        Holder<Vehicle> VehicleHolder = new Holder<>();
-        Holder<PortManager> PortManagerHolder = new Holder<>();
-        Holder<Trip> TripHolder = new Holder<>();
 
         // populate Holders
-        PortHolder.populateList("portsData.txt");
-        ContainerHolder.populateList("containersData.txt");
-        VehicleHolder.populateList("vehiclesData.txt");
-        PortManagerHolder.populateList("portManagersData.txt");
-        TripHolder.populateList("tripsData.txt");
+//        Database.portHolder.populateList("portsData.txt");
+//        Database.containerHolder.populateList("containersData.txt");
+//        Database.vehicleHolder.populateList("vehiclesData.txt");
+//        Database.portManagerHolder.populateList("portManagersData.txt");
+//        Database.tripHolder.populateList("tripsData.txt");
 
+        Database.portHolder.printList();
 
         // View vehicles
-        VehicleHolder.getList().forEach(System.out::println);
+//        Database.vehicleHolder.getMap().forEach(System.out::println);
 
         // Creating a shutdown hook to save all holders
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 // Save all holders
-                System.out.println("");
-                PortHolder.saveList("portsData.txt");
-                ContainerHolder.saveList("containersData.txt");
-                VehicleHolder.saveList("vehiclesData.txt");
-                PortManagerHolder.saveList("portManagersData.txt");
-                TripHolder.saveList("tripsData.txt");
-                
+                System.out.println();
+                Database.portHolder.saveList("portsData.txt");
+                Database.containerHolder.saveList("containersData.txt");
+                Database.vehicleHolder.saveList("vehiclesData.txt");
+                Database.portManagerHolder.saveList("portManagersData.txt");
+                Database.tripHolder.saveList("tripsData.txt");
+
             }
         });
 
@@ -126,8 +123,6 @@ public class Main {
         MenuEvent managers = new MenuEvent("Managers", managersMenu);
         MenuEvent addVehicle = new MenuEvent("Add Vehicle", addVehicleMenu);
 
-
-
         // Create menu events for Vehicles
         MenuEvent addShip = new MenuEvent("Ship", () -> {
             System.out.println("Please enter the ship's name: ");
@@ -142,12 +137,13 @@ public class Main {
             Double vehicleCarryingCapacity = input.nextDouble();
             System.out.println("Please enter the ship's port ID (p-*): ");
             String vehiclePortID = input.nextLine();
-            Port vehiclePort = null;
-            for (Port port : PortHolder.getList()) {
-                if (port.getID().equals(vehiclePortID)) {
-                    vehiclePort = port;
-                }
-            }
+            Port vehiclePort;
+//            for (Port port : Database.portHolder.getMap()) {
+//                if (port.getID().equals(vehiclePortID)) {
+//                    vehiclePort = port;
+//                }
+//            }
+            vehiclePort = Database.portHolder.getMap().getOrDefault(vehiclePortID, null);
             Ship ship = new Ship(vehicleID, vehicleName, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
         });
 
@@ -162,20 +158,14 @@ public class Main {
             Double vehicleMaxFuel = input.nextDouble();
             System.out.println("Please enter the basic truck's carrying capacity: ");
             Double vehicleCarryingCapacity = input.nextDouble();
-            Port vehiclePort = null;
+            Port vehiclePort;
             input.nextLine();
             while (true) {
                 // get port id
                 System.out.println("Please enter the basic truck's port id (p-*): ");
                 String vehiclePortID = input.nextLine();
                 // get port
-                for (Port port : PortHolder.getList()) {
-                    if (port.getID().equals(vehiclePortID)) {
-                        vehiclePort = port;
-                        // exit loop
-                        break;
-                    }
-                }
+                vehiclePort = Database.portHolder.getMap().getOrDefault(vehiclePortID, null);
                 if (vehiclePort == null) {
                     System.out.println("Port not found. Try Again!");
                     continue;
@@ -183,7 +173,7 @@ public class Main {
                 break;
             }
             BasicTruck basicTruck = new BasicTruck(vehicleID, vehicleName, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
-            VehicleHolder.addToList(basicTruck);
+            Database.vehicleHolder.addItem(vehicleID, basicTruck);
         });
         MenuEvent addReeferTruck = new MenuEvent("Reefer Truck", () -> {
             System.out.println("Please enter the reefer truck's name: ");
@@ -196,20 +186,14 @@ public class Main {
             Double vehicleMaxFuel = input.nextDouble();
             System.out.println("Please enter the reefer truck's carrying capacity: ");
             Double vehicleCarryingCapacity = input.nextDouble();
-            Port vehiclePort = null;
+            Port vehiclePort;
             input.nextLine();
             while (true) {
                 // get port id
                 System.out.println("Please enter the basic truck's port id (p-*): ");
                 String vehiclePortID = input.nextLine();
                 // get port
-                for (Port port : PortHolder.getList()) {
-                    if (port.getID().equals(vehiclePortID)) {
-                        vehiclePort = port;
-                        // exit loop
-                        break;
-                    }
-                }
+                vehiclePort = Database.portHolder.getMap().getOrDefault(vehiclePortID, null);
                 if (vehiclePort == null) {
                     System.out.println("Port not found. Try Again!");
                     continue;
@@ -217,7 +201,7 @@ public class Main {
                 break;
             }
             ReeferTruck reeferTruck = new ReeferTruck(vehicleID, vehicleName, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
-            VehicleHolder.addToList(reeferTruck);
+            Database.vehicleHolder.addItem(vehicleID, reeferTruck);
         });
         MenuEvent addTankerTruck = new MenuEvent("Tanker Truck", () -> {
             System.out.println("Please enter the tanker truck's name: ");
@@ -230,20 +214,14 @@ public class Main {
             Double vehicleMaxFuel = input.nextDouble();
             System.out.println("Please enter the tanker truck's carrying capacity: ");
             Double vehicleCarryingCapacity = input.nextDouble();
-            Port vehiclePort = null;
+            Port vehiclePort;
             input.nextLine();
             while (true) {
                 // get port id
                 System.out.println("Please enter the basic truck's port id (p-*): ");
                 String vehiclePortID = input.nextLine();
                 // get port
-                for (Port port : PortHolder.getList()) {
-                    if (port.getID().equals(vehiclePortID)) {
-                        vehiclePort = port;
-                        // exit loop
-                        break;
-                    }
-                }
+                vehiclePort = Database.portHolder.getMap().getOrDefault(vehiclePortID, null);
                 if (vehiclePort == null) {
                     System.out.println("Port not found. Try Again!");
                     continue;
@@ -251,7 +229,7 @@ public class Main {
                 break;
             }
             TankerTruck tankerTruck = new TankerTruck(vehicleID, vehicleName, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
-            VehicleHolder.addToList(tankerTruck);
+            Database.vehicleHolder.addItem(vehicleID, tankerTruck);
         });
 
         trucksMenu.addEvent(addBasicTruck);
@@ -276,14 +254,12 @@ public class Main {
             System.out.println("Please enter the port landing ability (True/ False): ");
             Boolean portLandingAbility = input.nextBoolean();
             Port port = new Port(portID, portName, portLatitude, portLongitude, portFuelCapacity, portLandingAbility);
-            PortHolder.addToList(port);
+            Database.portHolder.addItem(portID, port);
         });
         MenuEvent removePort = new MenuEvent("Remove port", () -> {
             System.out.println("Remove port");
         });
-        MenuEvent viewPorts = new MenuEvent("View Ports", () -> {
-            System.out.println("View Ports");
-        });
+        MenuEvent viewPorts = new MenuEvent("View Ports", Database.portHolder::printList);
 
         MenuEvent removeVehicle = new MenuEvent("Remove vehicle", () -> {
             System.out.println("Remove vehicle");
@@ -334,11 +310,15 @@ public class Main {
         managersMenu.addEvent(removeManager);
         managersMenu.addEvent(viewManagers);
 
-        // Adding all  (sub menus) to main menu
+        // Adding all  (sub menus) to admin menu and port manager menu
+        // Admin menu
         adminMenu.addEvent(ports);
         adminMenu.addEvent(vehicles);
         adminMenu.addEvent(containers);
         adminMenu.addEvent(managers);
+
+        // Port manager menu
+        portManagerMenu.addEvent(ports);
 
         // Create menu.Menu Events
         MenuEvent load = new MenuEvent("Load", () -> {
@@ -370,7 +350,8 @@ public class Main {
             System.out.println("Trip From Range");
         });
 
-        // Adding all (menu events) to main menu
+        // Adding all (menu events) to admin menu and port manager menu
+        // Admin menu
         adminMenu.addEvent(load);
         adminMenu.addEvent(unload);
         adminMenu.addEvent(refuel);
@@ -380,8 +361,15 @@ public class Main {
         adminMenu.addEvent(tripsInDay);
         adminMenu.addEvent(tripFromRange);
 
-        // Running main menu
-//        adminMenu.run();
+        // Port manager menu
+        portManagerMenu.addEvent(load);
+        portManagerMenu.addEvent(unload);
+        portManagerMenu.addEvent(refuel);
+        portManagerMenu.addEvent(fuelUsed);
+        portManagerMenu.addEvent(containerWeight);
+        portManagerMenu.addEvent(shipsInPort);
+        portManagerMenu.addEvent(tripsInDay);
+        portManagerMenu.addEvent(tripFromRange);
     }
 
 //    public static void TestPorts() {
@@ -392,70 +380,70 @@ public class Main {
 //        Port newPort = new Port("p-4", "New Port", 51.5074, 0.1278, 7500000.0, true);
 //
 //        // Create a port holder
-////        Holder<Port> portHolder = new Holder<>();
-////        portHolder.populateList("portsData.txt");
-////        portHolder.addToList(manchesterPort);
-////        portHolder.addToList(liverpoolPort);
-////        portHolder.addToList(londonPort);
-////        portHolder.addToList(newPort);
-////        portHolder.getList().forEach(System.out::println);
-////
-////        portHolder.saveList("portsData.txt");
+//        Holder<Port> portHolder = new Holder<>();
+//        portHolder.populateList("portsData.txt");
+//        portHolder.addToList(manchesterPort);
+//        portHolder.addToList(liverpoolPort);
+//        portHolder.addToList(londonPort);
+//        portHolder.addToList(newPort);
+//        portHolder.getList().forEach(System.out::println);
+//
+//        portHolder.saveList("portsData.txt");
 //
 //        // manchester ports containers
-////        Container manchesterContainer1 = new Container("c-1", 1.0, CONTAINER_TYPE.DRY_STORAGE, manchesterPort, liverpoolPort);
-////        Container manchesterContainer2 = new Container("c-2", 2.2, CONTAINER_TYPE.OPEN_TOP, manchesterPort, londonPort);
-////        Container manchesterContainer3 = new Container("c-3", 3.1, CONTAINER_TYPE.OPEN_SIDE, manchesterPort, londonPort);
+//        Container manchesterContainer1 = new Container("c-1", 1.0, CONTAINER_TYPE.DRY_STORAGE, manchesterPort, liverpoolPort);
+//        Container manchesterContainer2 = new Container("c-2", 2.2, CONTAINER_TYPE.OPEN_TOP, manchesterPort, londonPort);
+//        Container manchesterContainer3 = new Container("c-3", 3.1, CONTAINER_TYPE.OPEN_SIDE, manchesterPort, londonPort);
 //
 //        // liverpool ports containers
-////        Container liverpoolContainer1 = new Container("c-4", 4.0, CONTAINER_TYPE.REFRIGERATED, liverpoolPort, manchesterPort);
-////        Container liverpoolContainer2 = new Container("c-5", 5.0, CONTAINER_TYPE.LIQUID, liverpoolPort, londonPort);
-////        Container liverpoolContainer3 = new Container("c-6", 6.0, CONTAINER_TYPE.DRY_STORAGE, liverpoolPort, londonPort);
+//        Container liverpoolContainer1 = new Container("c-4", 4.0, CONTAINER_TYPE.REFRIGERATED, liverpoolPort, manchesterPort);
+//        Container liverpoolContainer2 = new Container("c-5", 5.0, CONTAINER_TYPE.LIQUID, liverpoolPort, londonPort);
+//        Container liverpoolContainer3 = new Container("c-6", 6.0, CONTAINER_TYPE.DRY_STORAGE, liverpoolPort, londonPort);
 //
 //        // london ports containers
-////        Container londonContainer1 = new Container("c-7", 1.4, CONTAINER_TYPE.OPEN_TOP, londonPort, manchesterPort);
-////        Container londonContainer2 = new Container("c-8", 2.3, CONTAINER_TYPE.OPEN_SIDE, londonPort, liverpoolPort);
-////        Container londonContainer3 = new Container("c-9", 0.8, CONTAINER_TYPE.REFRIGERATED, londonPort, liverpoolPort);
+//        Container londonContainer1 = new Container("c-7", 1.4, CONTAINER_TYPE.OPEN_TOP, londonPort, manchesterPort);
+//        Container londonContainer2 = new Container("c-8", 2.3, CONTAINER_TYPE.OPEN_SIDE, londonPort, liverpoolPort);
+//        Container londonContainer3 = new Container("c-9", 0.8, CONTAINER_TYPE.REFRIGERATED, londonPort, liverpoolPort);
 //
 //        // create trucks in liverpool port
 //        BasicTruck liverpoolTruck1 = new BasicTruck("tr-1", "Liverpool Truck 1", 100.0, 100.0, liverpoolPort, 100.0, new ArrayList<>());
 //
 //        // view truck
-////        System.out.println(liverpoolTruck1);
-////        liverpoolTruck1.loadContainer(liverpoolContainer1);
-////        liverpoolTruck1.loadContainer(liverpoolContainer2);
-////        liverpoolTruck1.loadContainer(liverpoolContainer3);
-////        System.out.println(liverpoolTruck1);
+//        System.out.println(liverpoolTruck1);
+//        liverpoolTruck1.loadContainer(liverpoolContainer1);
+//        liverpoolTruck1.loadContainer(liverpoolContainer2);
+//        liverpoolTruck1.loadContainer(liverpoolContainer3);
+//        System.out.println(liverpoolTruck1);
 //
-////        // view the ports
-////        System.out.println(manchesterPort);
-////        System.out.println(liverpoolPort);
-////        System.out.println(londonPort);
+//        // view the ports
+//        System.out.println(manchesterPort);
+//        System.out.println(liverpoolPort);
+//        System.out.println(londonPort);
 //
 //        // view the manchester containers
-////        System.out.println(manchesterContainer1);
-////        System.out.println(manchesterContainer2);
-////        System.out.println(manchesterContainer3);
+//        System.out.println(manchesterContainer1);
+//        System.out.println(manchesterContainer2);
+//        System.out.println(manchesterContainer3);
 //
 //        // view ports distance
-////        System.out.println("Distance between Manchester and Liverpool: " + manchesterPort.getDistance(liverpoolPort) + " kilometers");
-////        System.out.println("Distance between Manchester and London: " + manchesterPort.getDistance(londonPort) + " kilometers");
-////        System.out.println("Distance between Liverpool and London: " + liverpoolPort.getDistance(londonPort) + " kilometers");
+//        System.out.println("Distance between Manchester and Liverpool: " + manchesterPort.getDistance(liverpoolPort) + " kilometers");
+//        System.out.println("Distance between Manchester and London: " + manchesterPort.getDistance(londonPort) + " kilometers");
+//        System.out.println("Distance between Liverpool and London: " + liverpoolPort.getDistance(londonPort) + " kilometers");
 //
-////        // view fuel consumption of London containers
-////        System.out.println("Fuel consumption of London container 1: " + londonContainer1.getShipFuelConsumption() + " gallons");
-////        System.out.println("Fuel consumption of London container 2: " + londonContainer2.getShipFuelConsumption() + " gallons");
-////        System.out.println("Fuel consumption of London container 3: " + londonContainer3.getShipFuelConsumption() + " gallons");
+//        // view fuel consumption of London containers
+//        System.out.println("Fuel consumption of London container 1: " + londonContainer1.getShipFuelConsumption() + " gallons");
+//        System.out.println("Fuel consumption of London container 2: " + londonContainer2.getShipFuelConsumption() + " gallons");
+//        System.out.println("Fuel consumption of London container 3: " + londonContainer3.getShipFuelConsumption() + " gallons");
 //
 //        // Make a sample trip
-////        Trip trip = new Trip("t-1",liverpoolTruck1,manchesterPort,liverpoolPort);
-////        trip.setArrivalDate();
-////        System.out.println(trip);
+//        Trip trip = new Trip("t-1",liverpoolTruck1,manchesterPort,liverpoolPort);
+//        trip.setArrivalDate();
+//        System.out.println(trip);
 //        Holder<Trip> tripHolder = new Holder<>();
 //        tripHolder.populateList("tripsData.txt");
 //        tripHolder.getList().forEach(System.out::println);
-////        tripHolder.addToList(trip);
-////        tripHolder.saveList("tripsData.txt");
+//        tripHolder.addToList(trip);
+//        tripHolder.saveList("tripsData.txt");
 //
 //    }
 }
