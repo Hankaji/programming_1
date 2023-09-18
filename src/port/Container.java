@@ -8,7 +8,6 @@ public class Container implements Serializable {
     private final CONTAINER_TYPE CONTAINERType;
     private Double shipFuelConsumption;
     private Double truckFuelConsumption;
-
     private Port startPort;
     private Port destinationPort;
 
