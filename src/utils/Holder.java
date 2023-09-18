@@ -83,7 +83,7 @@ public class Holder<T> implements Serializable {
     }
 
     public void printList() {
-        System.out.println("Map:");
+        System.out.println("Printing list:");
         for (Map.Entry<String, T> entry : map.entrySet()) {
             System.out.println(entry.getValue());
         }
