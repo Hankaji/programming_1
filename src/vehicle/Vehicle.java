@@ -4,6 +4,7 @@ import port.*;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Scanner;
 
 public abstract class Vehicle implements Serializable {
     // private attributes of the class
@@ -34,11 +35,23 @@ public abstract class Vehicle implements Serializable {
         this.containers = containers;
     }
 
+    public Vehicle() {
+        // create default attributes
+        this.name = "default";
+        this.ID = "default";
+        this.currentFuel = 0.0;
+        this.maxFuel = 0.0;
+        this.carryingCapacity = 0.0;
+        this.containers = null;
+        this.currentPort = null;
+    }
+
     public void loadContainer(Container container) {
         containers.add(container);
         // print the vehicle name and the container ID
         System.out.println("Loaded container " + container.getID() + " onto " + this.name);
     }
+
 
     public void unloadContainer(Container container) {
         containers.remove(container);
@@ -65,6 +78,7 @@ public abstract class Vehicle implements Serializable {
                 ", maxFuel: " + maxFuel +
                 ", carryingCapacity: " + carryingCapacity +
                 ", containers: " + containers +
+                ", currentPort: " + currentPort.getName()  +
                 '}';
     }
 
@@ -95,4 +109,35 @@ public abstract class Vehicle implements Serializable {
     public List<Container> getContainers() {
         return containers;
     }
+
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+
+    public void setCurrentFuel(Double currentFuel) {
+        this.currentFuel = currentFuel;
+    }
+
+    public void setMaxFuel(Double maxFuel) {
+        this.maxFuel = maxFuel;
+    }
+
+    public void setCarryingCapacity(Double carryingCapacity) {
+        this.carryingCapacity = carryingCapacity;
+    }
+
+    public void setCurrentPort(Port currentPort) {
+        this.currentPort = currentPort;
+    }
+
+    public void setContainers(List<Container> containers) {
+        this.containers = containers;
+    }
 }
+
