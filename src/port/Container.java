@@ -9,14 +9,16 @@ public class Container implements Serializable {
     private Double shipFuelConsumption;
     private Double truckFuelConsumption;
     private Port startPort;
+    private Port currentPort;
     private Port destinationPort;
 
 
-    public Container(String ID, Double weight, CONTAINER_TYPE CONTAINERType, Port startPort, Port destinationPort) {
+    public Container(String ID, Double weight, CONTAINER_TYPE CONTAINERType, Port startPort, Port currentPort, Port destinationPort) {
         this.ID = ID;
         this.weight = weight;
         this.CONTAINERType = CONTAINERType;
         this.startPort = startPort;
+        this.currentPort = currentPort;
         this.destinationPort = destinationPort;
 
         switch (this.CONTAINERType) {
@@ -90,6 +92,14 @@ public class Container implements Serializable {
 
     public void setStartPort(Port startPort) {
         this.startPort = startPort;
+    }
+
+    public Port getCurrentPort() {
+        return currentPort;
+    }
+
+    public void setCurrentPort(Port currentPort) {
+        this.currentPort = currentPort;
     }
 
     public Port getDestinationPort() {

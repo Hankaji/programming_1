@@ -1,50 +1,112 @@
 package utils;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class InputValidator {
+    public static int validateInt() {
+        return validateInt((v) -> true, "", "Invalid input, please try again.");
+    }
     public static int validateInt(Function<Integer, Boolean> function) {
+        return validateInt(function, "", "Invalid input, please try again.");
+    }
+
+    public static int validateInt(Function<Integer, Boolean> function, String question) {
+        return validateInt(function, question, "Invalid input, please try again.");
+    }
+
+    public static int validateInt(Function<Integer, Boolean> function, String question, String errorMessage) {
         Scanner scanner = new Scanner(System.in);
-        while (true) {
+        int attempts = 1;
+        while (attempts <= 3) {
             try {
+                System.out.print(question);
                 int userInput = scanner.nextInt();
 
+                if (userInput == -1) return -1;
                 if (function.apply(userInput)) return userInput;
-                System.out.println("Invalid input, please try again");
+                System.out.println(errorMessage);
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid integer.");
+                scanner.nextLine();
             } catch (Exception e) {
-                System.out.println("Input error");
+                System.out.println("Error occurred, please try again.");
             }
+            attempts++;
         }
+        System.out.println("Too many attempts. Exiting program.");
+        return -1;
+    }
+
+    public static double validateDouble() {
+        return validateDouble((v) -> true, "", "Invalid input, please try again.");
     }
 
     public static double validateDouble(Function<Double, Boolean> function) {
+        return validateDouble(function, "", "Invalid input, please try again.");
+    }
+
+    public static double validateDouble(Function<Double, Boolean> function, String question) {
+        return validateDouble(function, question, "Invalid input, please try again.");
+    }
+
+    public static double validateDouble(Function<Double, Boolean> function, String question, String errorMessage) {
         Scanner scanner = new Scanner(System.in);
-        while (true) {
+        int attempts = 1;
+        while (attempts <= 3) {
             try {
+                System.out.print(question);
                 double userInput = scanner.nextDouble();
 
+                if (userInput == -1) return -1;
                 if (function.apply(userInput)) return userInput;
-                System.out.println("Invalid input, please try again");
+                System.out.println(errorMessage);
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid double.");
+                scanner.nextLine();
             } catch (Exception e) {
-                System.out.println("Input error");
+                System.out.println("Error occurred, please try again.");
             }
+            attempts++;
         }
+        System.out.println("Too many attempts. Exiting program.");
+        return -1;
+    }
+
+    public static String validateString() {
+        return validateString((v) -> true, "", "Invalid input, please try again.");
     }
 
     public static String validateString(Function<String, Boolean> function) {
+        return validateString(function, "", "Invalid input, please try again.");
+    }
+
+    public static String validateString(Function<String, Boolean> function, String question) {
+        return validateString(function, question, "Invalid input, please try again.");
+    }
+
+    public static String validateString(Function<String, Boolean> function, String question, String errorMessage) {
         Scanner scanner = new Scanner(System.in);
-        while (true) {
+        int attempts = 1;
+        while (attempts <= 3) {
             try {
+                System.out.print(question);
                 String userInput = scanner.nextLine();
 
+                if (userInput.equals("-1")) return "-1";
                 if (function.apply(userInput)) return userInput;
-                System.out.println("Invalid input, please try again");
+                System.out.println(errorMessage);
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid string.");
+                scanner.nextLine();
             } catch (Exception e) {
-                System.out.println("Input error");
+                System.out.println("Error occurred, please try again.");
             }
+            attempts++;
         }
+        System.out.println("Too many attempts. Exiting program.");
+        return "-1";
     }
 
 }

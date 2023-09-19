@@ -46,7 +46,8 @@ public class Menu implements Serializable {
         while (true) {
             display();
             System.out.print("Enter choice: ");
-            choice = input.nextInt();
+//            choice = input.nextInt();
+            choice = utils.InputValidator.validateInt(i -> i >= -1 && i <= eventList.size());
             if (choice == -1) {
                 System.out.print("Are you sure? (y/n): ");
                 char confirmation = input.next().charAt(0);
@@ -61,10 +62,6 @@ public class Menu implements Serializable {
             } else if (choice == 0) {
                 return;
 
-            } else if (choice < 0 || choice > eventList.size()) {
-                System.out.println("Invalid choice.");
-                Divider.printDivider();
-                continue;
             }
 
             eventList.get(choice - 1).run();

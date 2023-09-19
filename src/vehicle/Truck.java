@@ -6,8 +6,8 @@ import java.util.List;
 
 public abstract class Truck extends Vehicle {
     protected List<CONTAINER_TYPE> carriableContainers;
-    protected Truck(String ID, String name, Double currentFuel, Double maxFuel, Port port, Double carryingCapacity, List<Container> containers, List<CONTAINER_TYPE> carriableContainers) {
-        super(ID, name, currentFuel, maxFuel, port, carryingCapacity, containers);
+    protected Truck(String name, String ID, Double currentFuel, Double maxFuel, Port port, Double carryingCapacity, List<Container> containers, List<CONTAINER_TYPE> carriableContainers) {
+        super(name, ID, currentFuel, maxFuel, port, carryingCapacity, containers);
         this.carriableContainers = carriableContainers;
     }
 
