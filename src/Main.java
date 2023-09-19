@@ -132,6 +132,7 @@ public class Main {
 
         MenuEvent removeVehicle = new MenuEvent("Remove vehicle", Main::removeVehicle);
         MenuEvent viewVehicles = new MenuEvent("View Vehicles", Database.vehicleHolder::printList);
+        MenuEvent editVehicles = new MenuEvent("Edit Vehicles", Main::editVehicle);
 
         // Creating container events where it adds, removes and views containers
         MenuEvent addContainer = new MenuEvent("Add Container", Main::addContainer);
@@ -156,6 +157,7 @@ public class Main {
         vehiclesMenu.addEvent(addVehicleEvent);
         vehiclesMenu.addEvent(removeVehicle);
         vehiclesMenu.addEvent(viewVehicles);
+        vehiclesMenu.addEvent(editVehicles);
 
         // Adding events to sub container menu
         containersMenu.addEvent(addContainer);
@@ -179,6 +181,7 @@ public class Main {
         // Port manager menu
         portManagerMenu.addEvent(ports);
         portManagerMenu.addEvent(containers);
+        portManagerMenu.addEvent(managers);
 
         // Create menu.Menu Events
         MenuEvent checkin = new MenuEvent("Checkin Vehicles", () -> {
@@ -193,9 +196,8 @@ public class Main {
                 trip.getVehicleUsed().setCurrentPort(port);
                 trip.setStatus(TRIP_STATUS.ARRIVED);
             }
-
-
         });
+
         MenuEvent load = new MenuEvent("Load", Main::loadContainer);
         MenuEvent unload = new MenuEvent("Unload", () -> System.out.println("Unload"));
         MenuEvent refuel = new MenuEvent("Refuel", () -> System.out.println("Refuel"));
@@ -355,7 +357,7 @@ public class Main {
         String vehiclePortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value),
                 String.format("Please enter the %s's current port ID (p-*): ", vehicleType),
                 "Port not found. Try Again!");
-         Port vehiclePort = Database.portHolder.getMap().get(vehiclePortID);
+        Port vehiclePort = Database.portHolder.getMap().get(vehiclePortID);
 
         Vehicle vehicle = null;
         if (vehicleTypeCls == Ship.class) {
@@ -376,6 +378,39 @@ public class Main {
         String vehicleID = InputValidator.validateString(value -> Database.vehicleHolder.getMap().containsKey(value));
         Database.vehicleHolder.getMap().remove(vehicleID);
         System.out.println("Vehicle removed successfully!");
+    }
+
+    private static void editVehicle() {
+        // User input
+        String vehicleID = InputValidator.validateString(v -> Database.vehicleHolder.getMap().containsKey(v),
+                "Please enter the vehicle ID (sh-* / tr-*): ",
+                "Vehicle doesn't exists, please try again.");
+        String vehicleName = InputValidator.validateString("Please enter the vehicle's name: ");
+        String newVehicleID = InputValidator.validateString(v -> !Database.vehicleHolder.getMap().containsKey(v),
+                "Please enter the vehicle's ID (sh-* / tr-*): ",
+                "Vehicle already exists, please try again.");
+        Double vehicleCurrentFuel = InputValidator.validateDouble("Please enter the vehicle's current fuel: ");
+        Double vehicleMaxFuel = InputValidator.validateDouble("Please enter the vehicle's max fuel: ");
+        Double vehicleCarryingCapacity = InputValidator.validateDouble("Please enter the vehicle's carrying capacity: ");
+        String vehiclePortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value),
+                "Please enter the vehicle's current port ID (p-*): ",
+                "Port not found. Try Again!");
+        Port currentPort = Database.portHolder.getMap().get(vehiclePortID);
+
+        // Get the vehicle
+        Vehicle vehicle = Database.vehicleHolder.getMap().get(vehicleID);
+
+        // Edit the vehicle
+        vehicle.setName(vehicleName);
+        vehicle.setID(newVehicleID);
+        vehicle.setCurrentFuel(vehicleCurrentFuel);
+        vehicle.setMaxFuel(vehicleMaxFuel);
+        vehicle.setCarryingCapacity(vehicleCarryingCapacity);
+        vehicle.setCurrentPort(currentPort);
+
+        System.out.println("Vehicle edited successfully!");
+
+        if (InputValidator.validateBoolean("Do you want to continue?")) editVehicle();
     }
 
     private static void addContainer() {
