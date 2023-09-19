@@ -54,10 +54,10 @@ public class Main {
         Scanner input = new Scanner(System.in);
         while (true) {
             System.out.print("Username: ");
-            String username = input.nextLine();
+            String username = input.nextLine().trim();
 
             System.out.print("Password: ");
-            String password = input.nextLine();
+            String password = input.nextLine().trim();
 
             if (username.equals("-1") || password.equals("-1")) {
                 return null;
