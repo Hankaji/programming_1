@@ -1,5 +1,6 @@
 package vehicle;
 
+import data.Database;
 import port.*;
 
 import java.io.Serializable;
@@ -139,5 +140,33 @@ public abstract class Vehicle implements Serializable {
     public void setContainers(List<Container> containers) {
         this.containers = containers;
     }
+
+    public void moveToPort(Port destinationPort) {
+        // check if the vehicle has enough fuel to move to the destination port
+        double fuelNeeded = 0.0;
+        for (Container container : containers) {
+            fuelNeeded += container.getShipFuelConsumption() * currentPort.getDistance(destinationPort);
+        }
+        if (currentFuel >= fuelNeeded) {
+            // if it does, then move the vehicle to the destination port
+            System.out.println(this.name + " moved from " + currentPort.getName() + " to " + destinationPort.getName());
+            currentPort = null;
+            currentFuel -= fuelNeeded;
+        } else {
+            // if it doesn't, then print an error message
+            System.out.println("Not enough fuel to move " + this.name + " to " + destinationPort.getName());
+            return;
+        }
+
+        // create a trip
+        // get trip id by checking trip database
+        int tripID = Database.tripHolder.getMap().values().toArray().length;
+        String tripIDString =  "t-" + tripID;
+        Trip trip = new Trip(tripIDString, this, currentPort, destinationPort);
+        Database.tripHolder.addItem(tripIDString, trip);
+    }
+
+    // create an arrive method
+
 }
 
