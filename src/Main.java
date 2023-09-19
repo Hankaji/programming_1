@@ -371,56 +371,6 @@ public class Main {
         }
     }
 
-    private static Port checkUserPort() {
-        if (loggedUser instanceof PortManager) {
-            System.out.println("Current port: " + ((PortManager) loggedUser).getCurrentPort().getName());
-            return ((PortManager) loggedUser).getCurrentPort();
-        }
-        System.out.print("Please enter the port ID (p-*): ");
-        String portID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value));
-        System.out.println("Current port: " + Database.portHolder.getMap().get(portID).getName());
-        return Database.portHolder.getMap().get(portID);
-    }
-
-    private static void getTotalContainersWeight() {
-        // Get the port
-        System.out.print("Please enter the port ID (p-*): ");
-        String portID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value));
-        Port port = Database.portHolder.getMap().get(portID);
-
-        // calculate the total weight
-        Double totalWeight = 0.0;
-        for (Vehicle vehicle : Database.vehicleHolder.getMap().values()) {
-            if (vehicle.getCurrentPort().equals(port)) {
-                for (Container container : vehicle.getContainers()) {
-                    totalWeight += container.getWeight();
-                }
-            }
-        }
-
-        System.out.println("Total weight of containers in " + port.getName() + " is " + totalWeight + " tons");
-    }
-
-    private static void getTotalShipsInPort() {
-        // Get the port
-        Port port = checkUserPort();
-
-        // Get and count the ships
-        int totalShips = 0;
-        List<Ship> ships = new ArrayList<>();
-        for (Vehicle vehicle : Database.vehicleHolder.getMap().values()) {
-            if (vehicle instanceof Ship && vehicle.getCurrentPort().getName().equals(port.getName())) {
-                totalShips++;
-                ships.add((Ship) vehicle);
-            }
-        }
-
-        // Print the ships
-        ships.forEach(System.out::println);
-
-        System.out.println("Total ships in " + port.getName() + " is " + totalShips);
-    }
-
     private static void removeVehicle() {
         System.out.print("Please enter the vehicle ID (sh-* / btr-* / rtr-* / ttr-*): ");
         String vehicleID = InputValidator.validateString(value -> Database.vehicleHolder.getMap().containsKey(value));
@@ -445,6 +395,9 @@ public class Main {
         }
         int containerType = InputValidator.validateInt(value -> value <= 5 && value >= 1);
 
+        System.out.println("Please enter the start port id: ");
+        String startPortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value));
+        Port startPort = Database.portHolder.getMap().get(startPortID);
 
         System.out.println("Please enter the current port id: ");
         String currentPortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value));
@@ -454,7 +407,7 @@ public class Main {
         String destinationPortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value));
         Port destinationPort = Database.portHolder.getMap().get(destinationPortID);
 
-        Container container = new Container(containerID, containerWeight, CONTAINER_TYPE.values()[containerType - 1], currentPort, destinationPort);
+        Container container = new Container(containerID, containerWeight, CONTAINER_TYPE.values()[containerType - 1], startPort, currentPort, destinationPort);
         Database.containerHolder.addItem(containerID, container);
     }
 

@@ -10,6 +10,10 @@ public class InputValidator {
         return validateInt(function, "", "Input error");
     }
 
+    public static int validateInt(Function<Integer, Boolean> function, String question) {
+        return validateInt(function, question, "Input error");
+    }
+
     public static int validateInt(Function<Integer, Boolean> function, String question, String errorMessage) {
         Scanner scanner = new Scanner(System.in);
         int attempts = 1;
@@ -37,6 +41,10 @@ public class InputValidator {
         return validateDouble(function, "", "Input error");
     }
 
+    public static double validateDouble(Function<Double, Boolean> function, String question) {
+        return validateDouble(function, question, "Input error");
+    }
+
     public static double validateDouble(Function<Double, Boolean> function, String question, String errorMessage) {
         Scanner scanner = new Scanner(System.in);
         int attempts = 1;
@@ -62,6 +70,10 @@ public class InputValidator {
 
     public static String validateString(Function<String, Boolean> function) {
         return validateString(function, "", "Input error");
+    }
+
+    public static String validateString(Function<String, Boolean> function, String question) {
+        return validateString(function, question, "Input error");
     }
 
     public static String validateString(Function<String, Boolean> function, String question, String errorMessage) {
