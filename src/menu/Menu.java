@@ -1,6 +1,7 @@
 package menu;
 
 import utils.Divider;
+import utils.InputValidator;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,12 +47,9 @@ public class Menu implements Serializable {
         while (true) {
             display();
             System.out.print("Enter choice: ");
-//            choice = input.nextInt();
             choice = utils.InputValidator.validateInt(i -> i >= -1 && i <= eventList.size());
             if (choice == -1) {
-                System.out.print("Are you sure? (y/n): ");
-                char confirmation = input.next().charAt(0);
-                if (confirmation == 'y' || confirmation == 'Y') {
+                if (utils.InputValidator.validateBoolean("Are you sure you want to exit?")) {
                     input.close();
                     System.exit(0);
                 }
