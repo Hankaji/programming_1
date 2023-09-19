@@ -181,9 +181,21 @@ public class Main {
             // for each List, change status to ARRIVED, and set arrival date, set vehicle's current port to the port
             for (Trip trip : arrivingTrips) {
                 trip.setArrivalDate();
-                trip.getVehicleUsed().setCurrentPort(port);
+                Vehicle vehicle = trip.getVehicleUsed();
+                vehicle.setCurrentPort(port);
+                // remove all containers from vehicle and add them to the port
+                
+//                List<Container> containersToUpdate = vehicle.getContainers();
+//                vehicle.setContainers(new ArrayList<>());
+//                for (Container container : containersToUpdate) {
+//                    container.setCurrentPort(port);
+//                }
                 trip.setStatus(TRIP_STATUS.ARRIVED);
+                // log out vehicles arriving
+                System.out.println(trip.getVehicleUsed().getName() + " arrived at " + port.getName());
+
             }
+
 
 
         });
@@ -198,7 +210,8 @@ public class Main {
 
         // Adding all (menu events) to admin menu and port manager menu
         // Admin menu
-        for (MenuEvent menuEvent : Arrays.asList(load,
+        for (MenuEvent menuEvent : Arrays.asList(checkin,
+                load,
                 unload,
                 refuel,
                 fuelUsed,
@@ -430,6 +443,7 @@ public class Main {
             System.out.println("No vehicles in " + port.getName());
             return;
         }
+//
 //        if (Database.containerHolder.getMap().values().stream().anyMatch(container -> container.getCurrentPort().getName().equals(port.getName()))) {
 //            System.out.println("No containers in " + port.getName());
 //            return;
@@ -450,37 +464,37 @@ public class Main {
                 System.out.println(vehicle);
             }
         }
-//        Scanner input = new Scanner(System.in);
-//
-//        System.out.println("Please enter the vehicle ID (sh-* / tr-*): ");
-//        String vehicleID = InputValidator.validateString(value -> Database.vehicleHolder.getMap().containsKey(value));
-//
-//        Vehicle vehicle = Database.vehicleHolder.getMap().get(vehicleID);
-//        while (true) {
-//            System.out.println("Please enter the container ID (c-*): ");
-//            String containerID = InputValidator.validateString(value -> Database.containerHolder.getMap().containsKey(value));
-//            Container container = Database.containerHolder.getMap().get(containerID);
-//            // check if containerID has same destination as first container in vehicle
-//            try {
-//                if (vehicle.getContainers().get(0).getDestinationPort().getName().equals(container.getDestinationPort().getName())) {
-//                    System.out.println("Container " + containerID + " loaded successfully!");
-//                    vehicle.loadContainer(container);
-//                } else {
-//                    System.out.println("Container " + containerID + " has different destination port than the first container in the vehicle!");
-//                }
-//            } catch (IndexOutOfBoundsException e) {
-//                System.out.println("Container " + containerID + " loaded successfully!");
-//                vehicle.loadContainer(container);
-//            }
-//            System.out.println("Do you want to load another container? (Y/N)");
-//            String choice = InputValidator.validateString(value -> value.equalsIgnoreCase("Y") || value.equalsIgnoreCase("N"));
-//            if (choice.equalsIgnoreCase("N")) {
-//                break;
-//            }
-//        }
-//
-//        // move the vehicle to the destination port
-//        vehicle.moveToPort(vehicle.getContainers().get(0).getDestinationPort());
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("Please enter the vehicle ID (sh-* / tr-*): ");
+        String vehicleID = InputValidator.validateString(value -> Database.vehicleHolder.getMap().containsKey(value));
+
+        Vehicle vehicle = Database.vehicleHolder.getMap().get(vehicleID);
+        while (true) {
+            System.out.println("Please enter the container ID (c-*): ");
+            String containerID = InputValidator.validateString(value -> Database.containerHolder.getMap().containsKey(value));
+            Container container = Database.containerHolder.getMap().get(containerID);
+            // check if containerID has same destination as first container in vehicle
+            try {
+                if (vehicle.getContainers().get(0).getDestinationPort().getName().equals(container.getDestinationPort().getName())) {
+                    System.out.println("Container " + containerID + " loaded successfully!");
+                    vehicle.loadContainer(container);
+                } else {
+                    System.out.println("Container " + containerID + " has different destination port than the first container in the vehicle!");
+                }
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("Container " + containerID + " loaded successfully!");
+                vehicle.loadContainer(container);
+            }
+            System.out.println("Do you want to load another container? (Y/N)");
+            String choice = InputValidator.validateString(value -> value.equalsIgnoreCase("Y") || value.equalsIgnoreCase("N"));
+            if (choice.equalsIgnoreCase("N")) {
+                break;
+            }
+        }
+
+        // move the vehicle to the destination port
+        vehicle.moveToPort(vehicle.getContainers().get(0).getDestinationPort());
 //
 //        // arrive at the destination port
 
