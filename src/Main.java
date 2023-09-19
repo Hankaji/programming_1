@@ -86,6 +86,8 @@ public class Main {
             Database.vehicleHolder.saveList("vehiclesData.txt");
             Database.tripHolder.saveList("tripsData.txt");
             try {
+
+
                 AccountDatabase.saveToFile();
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -108,11 +110,11 @@ public class Main {
         MenuEvent addVehicleEvent = new MenuEvent("Add Vehicle", addVehicleMenu);
 
         // Create menu events for Vehicles
-        MenuEvent addShipEvent = new MenuEvent("Ship", () -> addVehicle("Ship"));
+        MenuEvent addShipEvent = new MenuEvent("Ship", () -> addVehicle(Ship.class));
 
-        MenuEvent addBasicTruck = new MenuEvent("Basic Truck", () -> addVehicle("Basic Truck"));
-        MenuEvent addReeferTruck = new MenuEvent("Reefer Truck", () -> addVehicle("Reefer Truck"));
-        MenuEvent addTankerTruck = new MenuEvent("Tanker Truck", () -> addVehicle("Tanker Truck"));
+        MenuEvent addBasicTruck = new MenuEvent("Basic Truck", () -> addVehicle(BasicTruck.class));
+        MenuEvent addReeferTruck = new MenuEvent("Reefer Truck", () -> addVehicle(ReeferTruck.class));
+        MenuEvent addTankerTruck = new MenuEvent("Tanker Truck", () -> addVehicle(TankerTruck.class));
 
         trucksMenu.addEvent(addBasicTruck);
         trucksMenu.addEvent(addReeferTruck);
@@ -231,14 +233,15 @@ public class Main {
     private static Port checkUserPort() {
         // Check if user is a port manager, if so, return the port they are managing
         if (loggedUser instanceof PortManager) {
-            System.out.println("Current working port: " + ((PortManager) loggedUser).getCurrentPort().getName());
+            System.out.println("Current port: " + ((PortManager) loggedUser).getCurrentPort().getName());
             return ((PortManager) loggedUser).getCurrentPort();
         }
 
         // Else, ask the user to enter the port ID
-        System.out.print("Please enter the port ID (p-*): ");
-        String portID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value));
-        System.out.println("Current working port: " + Database.portHolder.getMap().get(portID).getName());
+        String portID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value),
+                "Please enter the port ID (p-*): ",
+                "Port doesn't exist, please try again.");
+        System.out.println("Current port: " + Database.portHolder.getMap().get(portID).getName());
         return Database.portHolder.getMap().get(portID);
     }
 
@@ -326,48 +329,47 @@ public class Main {
         Port port = new Port(portID, portName, portLatitude, portLongitude, portFuelCapacity, portLandingAbility);
         Database.portHolder.addItem(portID, port);
     }
-     private static void addVehicle(String vehicleType) {
-        Scanner input = new Scanner(System.in);
+     private static void addVehicle(Class<? extends Vehicle> vehicleTypeCls) {
+        String vehicleType;
+        String vehicleIDFormat = "(tr-*)";
+         switch (vehicleTypeCls.getName()) {
+             case "vehicle.Ship" -> {
+                 vehicleType = "Ship";
+                 vehicleIDFormat = "(sh-*)";
+             }
+             case "vehicle.BasicTruck" -> vehicleType = "Basic Truck";
+             case "vehicle.ReeferTruck" -> vehicleType = "Reefer Truck";
+             case "vehicle.TankerTruck" -> vehicleType = "Tanker Truck";
+             default -> throw new IllegalStateException("Unexpected value: " + vehicleTypeCls.getName());
+         }
 
         System.out.printf("Please enter the %s's name: ", vehicleType);
-        String vehicleName = input.nextLine();
-        System.out.printf("Please enter the %s's ID " + (Objects.equals(vehicleType, "Ship") ? "(sh-*)" : (Objects.equals(vehicleType, "Basic Truck") || Objects.equals(vehicleType, "Reefer Truck") || Objects.equals(vehicleType, "Tanker Truck")) ? "(tr-*)" : null) + ": ", vehicleType);
-        String vehicleID = input.nextLine();
+        String vehicleName = InputValidator.validateString();
+        System.out.printf("Please enter the %s's ID " + vehicleIDFormat + ": ", vehicleType);
+        String vehicleID = InputValidator.validateString();
         System.out.printf("Please enter the %s's current fuel: ", vehicleType);
-        Double vehicleCurrentFuel = input.nextDouble();
+        Double vehicleCurrentFuel = InputValidator.validateDouble();
         System.out.printf("Please enter the %s's max fuel: ", vehicleType);
-        Double vehicleMaxFuel = input.nextDouble();
+        Double vehicleMaxFuel = InputValidator.validateDouble();
         System.out.printf("Please enter the %s's carrying capacity: ", vehicleType);
-        Double vehicleCarryingCapacity = input.nextDouble();
-        Port vehiclePort;
-        input.nextLine();
-        while (true) {
+        Double vehicleCarryingCapacity = InputValidator.validateDouble();
+        String vehiclePortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value),
+                String.format("Please enter the %s's current port ID (p-*): ", vehicleType),
+                "Port not found. Try Again!");
+         Port vehiclePort = Database.portHolder.getMap().get(vehiclePortID);
 
-            System.out.printf("Please enter the %s's current port ID (p-*): ", vehicleType);
-            String vehiclePortID = input.nextLine();
-
-            vehiclePort = Database.portHolder.getMap().getOrDefault(vehiclePortID, null);
-            if (vehiclePort == null) {
-                System.out.println("Port not found. Try Again!");
-                continue;
-            }
-            break;
+        Vehicle vehicle = null;
+        if (vehicleTypeCls == Ship.class) {
+            vehicle = new Ship(vehicleName, vehicleID, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
+        } else if (vehicleTypeCls == BasicTruck.class) {
+            vehicle = new BasicTruck(vehicleName, vehicleID, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
+        } else if (vehicleTypeCls == ReeferTruck.class) {
+            vehicle = new ReeferTruck(vehicleName, vehicleID, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
+        } else if (vehicleTypeCls == TankerTruck.class) {
+            vehicle = new TankerTruck(vehicleName, vehicleID, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
         }
 
-
-        if (Objects.equals(vehicleType, "Ship")) {
-            Ship ship = new Ship(vehicleID, vehicleName, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
-            Database.vehicleHolder.addItem(vehicleID, ship);
-        } else if (Objects.equals(vehicleType, "Basic Truck")) {
-            BasicTruck basicTruck = new BasicTruck(vehicleID, vehicleName, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
-            Database.vehicleHolder.addItem(vehicleID, basicTruck);
-        } else if (Objects.equals(vehicleType, "Reefer Truck")) {
-            ReeferTruck reeferTruck = new ReeferTruck(vehicleID, vehicleName, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
-            Database.vehicleHolder.addItem(vehicleID, reeferTruck);
-        } else if (Objects.equals(vehicleType, "Tanker Truck")) {
-            TankerTruck tankerTruck = new TankerTruck(vehicleID, vehicleName, vehicleCurrentFuel, vehicleMaxFuel, vehiclePort, vehicleCarryingCapacity, new ArrayList<>());
-            Database.vehicleHolder.addItem(vehicleID, tankerTruck);
-        }
+        Database.vehicleHolder.addItem(vehicleID, vehicle);
     }
 
     private static void removeVehicle() {

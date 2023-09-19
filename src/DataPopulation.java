@@ -11,14 +11,14 @@ import vehicle.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class DataPopulation {
     private static final Holder<Port> portHolder = new Holder<>();
     private static final Holder<Container> containerHolder = new Holder<>();
     private static final Holder<Vehicle> vehicleHolder = new Holder<>();
+    private static final Holder<Trip> tripHolder = new Holder<>();
     public static void main(String[] args) throws IOException {
         // Delete the all the data files and repopulate it with the following data
         String accountFilePath = "src/data/accounts.txt";
@@ -56,6 +56,16 @@ public class DataPopulation {
         // Vehicles
         populateVehicleData();
         vehicleHolder.saveList("vehiclesData.txt");
+
+//        for (String s : vehicleHolder.getMap().keySet()) {
+//            System.out.println(s);
+//        }
+        // Trips
+        populateTripData();
+        tripHolder.saveList("tripsData.txt");
+        for (Trip trip : tripHolder.getMap().values()) {
+            System.out.println(trip);
+        }
     }
 
     private static void populatePortHolder() {
@@ -286,5 +296,66 @@ public class DataPopulation {
         vehicleHolder.addItem(truck34.getID(), truck34);
         vehicleHolder.addItem(truck35.getID(), truck35);
         vehicleHolder.addItem(truck36.getID(), truck36);
+    }
+
+    private static void populateTripData() {
+        // Crete 20 trips
+        System.out.println(vehicleHolder.getMap().get("sh-1"));
+        Trip trip1 = new Trip("t-1", vehicleHolder.getMap().get("sh-1"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-1"), portHolder.getMap().get("p-2"));
+        Trip trip2 = new Trip("t-2", vehicleHolder.getMap().get("tr-12"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-2"), portHolder.getMap().get("p-3"));
+        Trip trip3 = new Trip("t-3", vehicleHolder.getMap().get("sh-3"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-3"), portHolder.getMap().get("p-4"));
+        Trip trip4 = new Trip("t-4", vehicleHolder.getMap().get("sh-4"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-4"), portHolder.getMap().get("p-5"));
+        Trip trip5 = new Trip("t-5", vehicleHolder.getMap().get("tr-25"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-5"), portHolder.getMap().get("p-6"));
+        Trip trip6 = new Trip("t-6", vehicleHolder.getMap().get("sh-6"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-6"), portHolder.getMap().get("p-1"));
+        Trip trip7 = new Trip("t-7", vehicleHolder.getMap().get("tr-17"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-1"), portHolder.getMap().get("p-2"));
+        Trip trip8 = new Trip("t-8", vehicleHolder.getMap().get("sh-8"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-2"), portHolder.getMap().get("p-3"));
+        Trip trip9 = new Trip("t-9", vehicleHolder.getMap().get("sh-9"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-3"), portHolder.getMap().get("p-4"));
+        Trip trip10 = new Trip("t-10", vehicleHolder.getMap().get("tr-10"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-4"), portHolder.getMap().get("p-5"));
+        Trip trip11 = new Trip("t-11", vehicleHolder.getMap().get("tr-19"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-5"), portHolder.getMap().get("p-6"));
+        Trip trip12 = new Trip("t-12", vehicleHolder.getMap().get("sh-12"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-6"), portHolder.getMap().get("p-1"));
+        Trip trip13 = new Trip("t-13", vehicleHolder.getMap().get("tr-27"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-1"), portHolder.getMap().get("p-2"));
+        Trip trip14 = new Trip("t-14", vehicleHolder.getMap().get("sh-2"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-2"), portHolder.getMap().get("p-3"));
+        Trip trip15 = new Trip("t-15", vehicleHolder.getMap().get("tr-33"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-3"), portHolder.getMap().get("p-4"));
+        Trip trip16 = new Trip("t-16", vehicleHolder.getMap().get("sh-4"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-4"), portHolder.getMap().get("p-5"));
+        Trip trip17 = new Trip("t-17", vehicleHolder.getMap().get("sh-5"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-5"), portHolder.getMap().get("p-6"));
+        Trip trip18 = new Trip("t-18", vehicleHolder.getMap().get("tr-16"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-6"), portHolder.getMap().get("p-1"));
+        Trip trip19 = new Trip("t-19", vehicleHolder.getMap().get("tr-30"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-1"), portHolder.getMap().get("p-2"));
+        Trip trip20 = new Trip("t-20", vehicleHolder.getMap().get("sh-8"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-2"), portHolder.getMap().get("p-3"));
+
+        // Add all trips to tripHolder
+        tripHolder.addItem(trip1.getID(), trip1);
+        tripHolder.addItem(trip2.getID(), trip2);
+        tripHolder.addItem(trip3.getID(), trip3);
+        tripHolder.addItem(trip4.getID(), trip4);
+        tripHolder.addItem(trip5.getID(), trip5);
+        tripHolder.addItem(trip6.getID(), trip6);
+        tripHolder.addItem(trip7.getID(), trip7);
+        tripHolder.addItem(trip8.getID(), trip8);
+        tripHolder.addItem(trip9.getID(), trip9);
+        tripHolder.addItem(trip10.getID(), trip10);
+        tripHolder.addItem(trip11.getID(), trip11);
+        tripHolder.addItem(trip12.getID(), trip12);
+        tripHolder.addItem(trip13.getID(), trip13);
+        tripHolder.addItem(trip14.getID(), trip14);
+        tripHolder.addItem(trip15.getID(), trip15);
+        tripHolder.addItem(trip16.getID(), trip16);
+        tripHolder.addItem(trip17.getID(), trip17);
+        tripHolder.addItem(trip18.getID(), trip18);
+        tripHolder.addItem(trip19.getID(), trip19);
+        tripHolder.addItem(trip20.getID(), trip20);
+    }
+
+    public static Date generateRandomDates(int minDays, int maxDays) {
+        Random random = new Random();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        Calendar calendar = Calendar.getInstance();
+        Date currentDate = calendar.getTime();
+
+        int randomDaysToAdd = random.nextInt(maxDays - minDays + 1) + minDays;
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.DAY_OF_YEAR, randomDaysToAdd);
+
+        return calendar.getTime();
     }
 }

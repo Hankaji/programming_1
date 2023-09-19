@@ -23,6 +23,17 @@ public class Trip implements Serializable {
         this.status = TRIP_STATUS.ARRIVING;
     }
 
+    // This constructor is used only for data population purpose
+    public Trip(String ID, Vehicle vehicleUsed, Date departureDate, Date arrivalDate, Port startPort, Port endPort) {
+        this.ID = ID;
+        this.vehicleUsed = vehicleUsed;
+        this.startPort = startPort;
+        this.endPort = endPort;
+        this.departureDate = departureDate;
+        this.arrivalDate = arrivalDate;
+        this.status = TRIP_STATUS.ARRIVING;
+    }
+
     // Display date, month and year from a date object
     public static String displayDate(Date date) {
         String[] dateArr = date.toString().split(" ");
