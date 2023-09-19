@@ -84,7 +84,6 @@ public class Main {
             Database.portHolder.saveList("portsData.txt");
             Database.containerHolder.saveList("containersData.txt");
             Database.vehicleHolder.saveList("vehiclesData.txt");
-            Database.portManagerHolder.saveList("portManagersData.txt");
             Database.tripHolder.saveList("tripsData.txt");
             try {
                 AccountDatabase.saveToFile();
@@ -372,7 +371,7 @@ public class Main {
     }
 
     private static void removeVehicle() {
-        System.out.print("Please enter the vehicle ID (sh-* / btr-* / rtr-* / ttr-*): ");
+        System.out.print("Please enter the vehicle ID (sh-* / tr-*): ");
         String vehicleID = InputValidator.validateString(value -> Database.vehicleHolder.getMap().containsKey(value));
         Database.vehicleHolder.getMap().remove(vehicleID);
         System.out.println("Vehicle removed successfully!");
@@ -380,45 +379,49 @@ public class Main {
     private static void addContainer() {
         Scanner input = new Scanner(System.in);
 
-        System.out.println("Please enter the container ID (c-*): ");
-        String containerID = input.nextLine();
+        String containerID = InputValidator.validateString(value -> !Database.containerHolder.getMap().containsKey(value),
+                "Please enter the container ID (c-*): ",
+                "Container already exists, please try again.");
 
-        System.out.println("Please enter the container weight: ");
-        double containerWeight = input.nextDouble();
-        input.nextLine(); // Consume the \n character
+        double containerWeight = InputValidator.validateDouble(value -> value > 0,
+                "Please enter the container weight: ",
+                "weight cant be negative or zero, please try again.");
 
-        System.out.println("Please choose the container type: ");
         int idx = 1;
         for (CONTAINER_TYPE type : CONTAINER_TYPE.values()) {
             System.out.println(idx + ") " + type);
             idx++;
         }
-        int containerType = InputValidator.validateInt(value -> value <= 5 && value >= 1);
+        int containerType = InputValidator.validateInt(value -> value <= 5 && value >= 1,
+                "Please choose the container type: ");
 
-        System.out.println("Please enter the start port id: ");
-        String startPortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value));
+        String startPortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value),
+                "Please enter the start port id: ",
+                "Port doesn't exist, please try again.");
         Port startPort = Database.portHolder.getMap().get(startPortID);
 
-        System.out.println("Please enter the current port id: ");
-        String currentPortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value));
+        String currentPortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value),
+                "Please enter the current port id: ",
+                "Port doesn't exist, please try again.");
         Port currentPort = Database.portHolder.getMap().get(currentPortID);
 
-        System.out.println("Please enter the destination port id: ");
-        String destinationPortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value));
+        String destinationPortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value),
+                "Please enter the destination port id: ",
+                "Port doesn't exist, please try again.");
         Port destinationPort = Database.portHolder.getMap().get(destinationPortID);
 
         Container container = new Container(containerID, containerWeight, CONTAINER_TYPE.values()[containerType - 1], startPort, currentPort, destinationPort);
         Database.containerHolder.addItem(containerID, container);
     }
 
-    private static void removePort(){
+    private static void removePort() {
         System.out.println("Please enter the port ID (p-*): ");
         String portID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value));
         Database.portHolder.removeFromMap(portID);
         System.out.println("Port removed successfully!");
     }
 
-    private static void removeContainer(){
+    private static void removeContainer() {
         System.out.println("Please enter the container ID (c-*): ");
         String containerID = InputValidator.validateString(value -> Database.containerHolder.getMap().containsKey(value));
         Database.containerHolder.removeFromMap(containerID);
