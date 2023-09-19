@@ -85,6 +85,7 @@ public class Main {
             Database.containerHolder.saveList("containersData.txt");
             Database.vehicleHolder.saveList("vehiclesData.txt");
             Database.tripHolder.saveList("tripsData.txt");
+            Database.refuelHolder.saveList("refuelsData.txt");
             try {
 
 
@@ -178,37 +179,11 @@ public class Main {
         portManagerMenu.addEvent(containers);
 
         // Create menu.Menu Events
-        MenuEvent checkin = new MenuEvent("Checkin Vehicles", () -> {
-            // Access vehicle database to get vehicles that are in the current port
-            // Access container database to get containers that are in the current port
-            Port port = checkUserPort();
-            // Access trip database to get trips that do not have arrival date with arrival port as current port
-            List<Trip> arrivingTrips = Database.tripHolder.getMap().values().stream().filter(trip -> trip.getStatus() == TRIP_STATUS.ARRIVING && trip.getEndPort().getName().equals(port.getName())).toList();
-            // for each List, change status to ARRIVED, and set arrival date, set vehicle's current port to the port
-            for (Trip trip : arrivingTrips) {
-                trip.setArrivalDate();
-                Vehicle vehicle = trip.getVehicleUsed();
-                vehicle.setCurrentPort(port);
-                // remove all containers from vehicle and add them to the port
-                
-//                List<Container> containersToUpdate = vehicle.getContainers();
-//                vehicle.setContainers(new ArrayList<>());
-//                for (Container container : containersToUpdate) {
-//                    container.setCurrentPort(port);
-//                }
-                trip.setStatus(TRIP_STATUS.ARRIVED);
-                // log out vehicles arriving
-                System.out.println(trip.getVehicleUsed().getName() + " arrived at " + port.getName());
-
-            }
-
-
-
-        });
+        MenuEvent checkin = new MenuEvent("Checkin Vehicles", Main::checkinVehicle);
         MenuEvent load = new MenuEvent("Load", Main::loadContainer);
-        MenuEvent unload = new MenuEvent("Unload", () -> System.out.println("Unload"));
-        MenuEvent refuel = new MenuEvent("Refuel", () -> System.out.println("Refuel"));
-        MenuEvent fuelUsed = new MenuEvent("Fuel Used", () -> System.out.println("Fuel Used"));
+        MenuEvent unload = new MenuEvent("Unload", Main::unloadContainer);
+        MenuEvent refuel = new MenuEvent("Refuel", Main::refuelVehicle);
+        MenuEvent fuelUsed = new MenuEvent("Fuel Used", Main::fuelUsed);
         MenuEvent containerWeight = new MenuEvent("Container Weight", Main::getTotalContainersWeight);
         MenuEvent shipsInPort = new MenuEvent("Ships In port", Main::getTotalShipsInPort);
         MenuEvent tripsInDay = new MenuEvent("Trips In Day", Database.tripHolder::printList);
@@ -229,7 +204,6 @@ public class Main {
         }
 
         // Port manager menu
-//        portManagerMenu.addEvent(checkin);
         for (MenuEvent menuEvent : Arrays.asList(checkin,
                 load,
                 unload,
@@ -241,6 +215,115 @@ public class Main {
                 tripFromRange)) {
             portManagerMenu.addEvent(menuEvent);
         }
+    }
+
+    private static void fuelUsed() {
+        // get port
+        Port port = checkUserPort();
+
+        System.out.println("Refuels in " + port.getName() + ":");
+        Double totalFuel = 0.0;
+        // get refuels in port
+        for (Refuel refuel : Database.refuelHolder.getMap().values()) {
+            if (refuel.getPort().getName().equals(port.getName())) {
+                System.out.println(refuel);
+                totalFuel += refuel.getFuelAmount();
+            }
+        }
+
+        System.out.println("Total fuel used in " + port.getName() + " is " + totalFuel + " gallons");
+
+        // get refuels in today
+        System.out.println("Refuels today in " + port.getName() + ":");
+        Double totalFuelToday = 0.0;
+        for (Refuel refuel : Database.refuelHolder.getMap().values()) {
+            if (refuel.getPort().getName().equals(port.getName()) && refuel.getRefuelDate().getDay() == new Date().getDay()) {
+                System.out.println(refuel);
+                totalFuelToday += refuel.getFuelAmount();
+            }
+        }
+
+        System.out.println("Total fuel used today in " + port.getName() + " is " + totalFuelToday + " gallons");
+
+
+    }
+    private static void refuelVehicle() {
+        // get port
+        Port port = checkUserPort();
+        // display list of vehicles in port
+        System.out.println("Vehicles in " + port.getName() + ":");
+        for (Vehicle vehicle : Database.vehicleHolder.getMap().values()) {
+            if (vehicle.getCurrentPort().getName().equals(port.getName())) {
+                System.out.println(vehicle);
+            }
+        }
+        if (Database.vehicleHolder.getMap().values().stream().noneMatch(vehicle -> vehicle.getCurrentPort().getName().equals(port.getName()))) {
+            System.out.println("No vehicles in " + port.getName());
+            return;
+        }
+
+        // get vehicle to refuel using input validator
+        String vehicleID = InputValidator.validateString(value -> Database.vehicleHolder.getMap().containsKey(value),
+                "Please enter the vehicle ID (sh-* / tr-*): ",
+                "Vehicle doesn't exist, please try again.");
+        // refuel vehicle
+        Vehicle vehicle = Database.vehicleHolder.getMap().get(vehicleID);
+        vehicle.refuel();
+
+    }
+
+    private static void unloadContainer() {
+        // get current port
+        Port port = checkUserPort();
+
+        // display all vehicles in port that have containers
+        System.out.println("Vehicles in " + port.getName() + " that have containers:");
+        for (Vehicle vehicle : Database.vehicleHolder.getMap().values()) {
+            if (vehicle.getCurrentPort().getName().equals(port.getName()) && vehicle.getContainers().size() != 0) {
+                System.out.println(vehicle);
+            }
+        }
+
+        // get vehicle to unload using input validator
+        String vehicleID = InputValidator.validateString(value -> Database.vehicleHolder.getMap().containsKey(value),
+                "Please enter the vehicle ID (sh-* / tr-*): ",
+                "Vehicle doesn't exist, please try again.");
+        // unload all containers in the vehicle
+        Vehicle vehicle = Database.vehicleHolder.getMap().get(vehicleID);
+        List<Container> containersToUnload = vehicle.getContainers();
+        vehicle.setContainers(new ArrayList<>());
+        for (Container container : containersToUnload) {
+            container.setCurrentPort(port);
+        }
+        System.out.println("Containers unloaded successfully!");
+
+    }
+
+    private static void checkinVehicle() {
+        // Access vehicle database to get vehicles that are in the current port
+        // Access container database to get containers that are in the current port
+        Port port = checkUserPort();
+        // Access trip database to get trips that do not have arrival date with arrival port as current port
+        List<Trip> arrivingTrips = Database.tripHolder.getMap().values().stream().filter(trip -> trip.getStatus() == TRIP_STATUS.ARRIVING && trip.getEndPort().getName().equals(port.getName())).toList();
+        // for each List, change status to ARRIVED, and set arrival date, set vehicle's current port to the port
+        for (Trip trip : arrivingTrips) {
+            trip.setArrivalDate();
+            Vehicle vehicle = trip.getVehicleUsed();
+            vehicle.setCurrentPort(port);
+
+            List<Container> containersToUpdate = vehicle.getContainers();
+            vehicle.setContainers(new ArrayList<>());
+            for (Container container : containersToUpdate) {
+                container.setCurrentPort(port);
+            }
+            trip.setStatus(TRIP_STATUS.ARRIVED);
+            // log out vehicles arriving
+            System.out.println(trip.getVehicleUsed().getName() + " arrived at " + port.getName() + " and ready to unload containers");
+
+        }
+
+
+
     }
 
     private static Port checkUserPort() {
@@ -445,21 +528,12 @@ public class Main {
 
     private static void loadContainer() {
         Port port = checkUserPort();
-//        if (Database.vehicleHolder.getMap().values().toArray().length != 0 &&
-//                Database.vehicleHolder.getMap().values().stream().anyMatch(vehicle -> vehicle.getCurrentPort().getName().equals(port.getName()))) {
-//            System.out.println("No vehicles in " + port.getName());
-//            return;
-//        }
+
         // Check if there is any vehicle in the current port
         if (Database.vehicleHolder.getMap().values().stream().noneMatch(vehicle -> vehicle.getCurrentPort().getName().equals(port.getName()))) {
             System.out.println("No vehicles in " + port.getName());
             return;
         }
-//
-//        if (Database.containerHolder.getMap().values().stream().anyMatch(container -> container.getCurrentPort().getName().equals(port.getName()))) {
-//            System.out.println("No containers in " + port.getName());
-//            return;
-//        }
 
 //         display all containers in the port
         System.out.println("Containers in " + port.getName() + ":");

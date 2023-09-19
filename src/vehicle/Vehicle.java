@@ -5,6 +5,7 @@ import port.*;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public abstract class Vehicle implements Serializable {
@@ -165,11 +166,33 @@ public abstract class Vehicle implements Serializable {
         Trip trip = new Trip(tripIDString, this, currentPort, destinationPort);
         currentPort = null;
 
-//        Trip trip = new Trip(tripIDString, this, currentPort, destinationPort);
         Database.tripHolder.addItem(tripIDString, trip);
     }
 
-    // create an arrive method
+    public void refuel() {
+        // check if the vehicle is at a port
+
+        // check if the vehicle has enough fuel
+        if (Objects.equals(currentFuel, maxFuel)) {
+            System.out.println("Cannot refuel " + this.name + " because it is already full");
+            return;
+        }
+        // refuel the vehicle
+
+        Double fuelNeeded = maxFuel - currentFuel;
+
+        currentFuel = maxFuel;
+
+        // create a refuel
+        // get refuel id by checking refuel database
+        int refuelID = Database.refuelHolder.getMap().values().toArray().length;
+        String refuelIDString =  "r-" + refuelID;
+        Refuel refuel = new Refuel(refuelIDString, fuelNeeded, currentPort, this);
+        Database.refuelHolder.addItem(refuelIDString, refuel);
+
+        System.out.println(this.name + " refueled at " + currentPort.getName() + " for " + fuelNeeded + " gallons");
+    }
+
 
 }
 

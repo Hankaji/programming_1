@@ -2,6 +2,7 @@ package data;
 
 import port.Container;
 import port.Port;
+import port.Refuel;
 import port.Trip;
 import user.AccountDatabase;
 import user.PortManager;
@@ -16,6 +17,7 @@ public class Database {
     public static final Holder<Container> containerHolder = Holder.<Container>fetchList("containersData.txt");
     public static final Holder<Vehicle> vehicleHolder = Holder.<Vehicle>fetchList("vehiclesData.txt");
     public static final Holder<Trip> tripHolder = Holder.<Trip>fetchList("tripsData.txt");
+    public static final Holder<Refuel> refuelHolder = Holder.<Refuel>fetchList("refuelsData.txt");
 
     public  static final Map<String, User> accountDatabase = AccountDatabase.getInstance();
 }
