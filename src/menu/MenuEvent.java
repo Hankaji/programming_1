@@ -1,6 +1,10 @@
-public class MenuEvent {
-    private String displayName;
-    private Runnable action;
+package menu;
+
+import java.io.Serializable;
+
+public class MenuEvent implements Serializable {
+    private final String displayName;
+    private final Runnable action;
     private Menu subMenu;
 
     public MenuEvent(String displayName, Runnable action) {
@@ -10,7 +14,7 @@ public class MenuEvent {
 
     public MenuEvent(String displayName, Menu subMenu) {
         this.displayName = displayName;
-        this.action = () -> subMenu.run();
+        this.action = subMenu::run;
         this.subMenu = subMenu;
     }
 
