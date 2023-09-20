@@ -18,25 +18,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {
-    private static final Menu adminMenu = new Menu();
-    private static final Menu portManagerMenu = new Menu();
+    private static final Menu appMenu = new Menu();
     private static User loggedUser = null;
 
     public static void main(String[] args) throws IOException {
+        // Setting up
         AccountDatabase.getInstance();
+        loggedUser = displayHomePage();
         setUpMenu();
 
-//        AccountDatabase.addUser(new Admin("admin", "admin"));
-
-        AccountDatabase.displayAllUsers();
-
-        // Authorization
-        loggedUser = displayHomePage();
-        if (loggedUser instanceof Admin) {
-            adminMenu.run();
-        } else if (loggedUser instanceof PortManager) {
-            portManagerMenu.run();
-        }
+        // Run the program
+        appMenu.run();
     }
 
     private static User displayHomePage() throws FileNotFoundException {
@@ -144,44 +136,41 @@ public class Main {
         MenuEvent addManager = new MenuEvent("Add Manager", Main::addManager);
         MenuEvent removeManager = new MenuEvent("Remove Manager", Main::removeManager);
         MenuEvent viewManagers = new MenuEvent("View Managers", AccountDatabase::displayAllUsers);
-        MenuEvent editManagers = new MenuEvent("edit Managers", Main::editManager);
+        MenuEvent editManagers = new MenuEvent("Edit Managers", Main::editManager);
+        MenuEvent editProfile = new MenuEvent("Edit Profile", Main::editProfile);
 
 
         // Adding events to sub port menu
-        portsMenu.addEvent(addPortEvent);
-        portsMenu.addEvent(removePort);
+        portsMenu.addEvent(addPortEvent, UserRoles.ADMIN);
+        portsMenu.addEvent(removePort, UserRoles.ADMIN);
         portsMenu.addEvent(viewPorts);
-        portsMenu.addEvent(editPorts);
+        portsMenu.addEvent(editPorts, UserRoles.ADMIN);
 
         // Adding events to sub vehicle menu
-        vehiclesMenu.addEvent(addVehicleEvent);
-        vehiclesMenu.addEvent(removeVehicle);
+        vehiclesMenu.addEvent(addVehicleEvent, UserRoles.ADMIN);
+        vehiclesMenu.addEvent(removeVehicle, UserRoles.ADMIN);
         vehiclesMenu.addEvent(viewVehicles);
-        vehiclesMenu.addEvent(editVehicles);
+        vehiclesMenu.addEvent(editVehicles, UserRoles.ADMIN);
 
         // Adding events to sub container menu
-        containersMenu.addEvent(addContainer);
-        containersMenu.addEvent(removeContainer);
+        containersMenu.addEvent(addContainer, UserRoles.ADMIN);
+        containersMenu.addEvent(removeContainer, UserRoles.ADMIN);
         containersMenu.addEvent(viewContainers);
-        containersMenu.addEvent(editContainers);
+        containersMenu.addEvent(editContainers, UserRoles.ADMIN);
 
         // Adding events to sub manager menu
-        managersMenu.addEvent(addManager);
-        managersMenu.addEvent(removeManager);
+        managersMenu.addEvent(addManager, UserRoles.ADMIN);
+        managersMenu.addEvent(removeManager, UserRoles.ADMIN);
         managersMenu.addEvent(viewManagers);
-        managersMenu.addEvent(editManagers);
+        managersMenu.addEvent(editManagers, UserRoles.ADMIN);
+        managersMenu.addEvent(editProfile, UserRoles.PORT_MANAGER);
 
         // Adding all  (sub menus) to admin menu and port manager menu
         // Admin menu
-        adminMenu.addEvent(ports);
-        adminMenu.addEvent(vehicles);
-        adminMenu.addEvent(containers);
-        adminMenu.addEvent(managers);
-
-        // Port manager menu
-        portManagerMenu.addEvent(ports);
-        portManagerMenu.addEvent(containers);
-        portManagerMenu.addEvent(managers);
+        appMenu.addEvent(ports);
+        appMenu.addEvent(vehicles);
+        appMenu.addEvent(containers);
+        appMenu.addEvent(managers);
 
         // Create menu.Menu Events
         MenuEvent checkin = new MenuEvent("Checkin Vehicles", () -> {
@@ -217,21 +206,7 @@ public class Main {
                 shipsInPort,
                 tripsInDay,
                 tripFromRange)) {
-            adminMenu.addEvent(menuEvent);
-        }
-
-        // Port manager menu
-//        portManagerMenu.addEvent(checkin);
-        for (MenuEvent menuEvent : Arrays.asList(checkin,
-                load,
-                unload,
-                refuel,
-                fuelUsed,
-                containerWeight,
-                shipsInPort,
-                tripsInDay,
-                tripFromRange)) {
-            portManagerMenu.addEvent(menuEvent);
+            appMenu.addEvent(menuEvent);
         }
     }
 
@@ -307,10 +282,10 @@ public class Main {
         System.out.println("Manager removed successfully!");
     }
 
-    private static void editManager() {
-        String managerPassword = InputValidator.validateString("Please enter the manager's password: ");
+    private static void editProfile() {
+        String managerPassword = InputValidator.validateString("Please enter your new password: ");
         String vehiclePortID = InputValidator.validateString(v -> Database.portHolder.getMap().containsKey(v),
-                "Please enter the port manager's current port ID (p-*): ",
+                "Please enter your new working port ID (p-*): ",
                 "Port not found. Try Again!");
         Port port = Database.portHolder.getMap().get(vehiclePortID);
 
@@ -318,7 +293,22 @@ public class Main {
         portManager.setPassword(managerPassword);
         ((PortManager) portManager).setCurrentPort(port);
 
-        System.out.println("Manager edited successfully!");
+        System.out.println("Your information has changed successfully!");
+    }
+
+    private static void editManager() {
+        String managerName = InputValidator.validateString(Database.accountDatabase::containsKey,
+                "Please enter a manager username: ",
+                "Manager doesn't exist, please try again.");
+        String vehiclePortID = InputValidator.validateString(v -> Database.portHolder.getMap().containsKey(v),
+                "Please enter your new working port ID (p-*): ",
+                "Port not found. Try Again!");
+        Port port = Database.portHolder.getMap().get(vehiclePortID);
+
+        User portManager = Database.accountDatabase.get(managerName);
+        ((PortManager) portManager).setCurrentPort(port);
+
+        System.out.println("Your information has changed successfully!");
 
         if (InputValidator.validateBoolean("Do you want to continue?")) editManager();
     }

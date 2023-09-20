@@ -1,5 +1,7 @@
 package menu;
 
+import user.Authenticator;
+import user.UserRoles;
 import utils.Divider;
 import utils.InputValidator;
 
@@ -7,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class Menu implements Serializable {
     List<MenuEvent> eventList;
@@ -21,6 +24,19 @@ public class Menu implements Serializable {
 
     public void addEvent(MenuEvent event) {
         eventList.add(event);
+    }
+
+    public void addEvent(MenuEvent event, UserRoles... AccessLevel) {
+        // Get all roles' names
+        List<String> roles = Stream.of(AccessLevel).map(UserRoles::getValue).toList();
+
+        // Get current user's role
+        String userRole = Authenticator.loggedUser.getClass().getName();
+
+        // Check if current user's role is in the list of roles
+        if (roles.contains(userRole)) {
+            eventList.add(event);
+        }
     }
 
     public void display() {

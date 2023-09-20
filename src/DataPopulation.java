@@ -57,15 +57,9 @@ public class DataPopulation {
         populateVehicleData();
         vehicleHolder.saveList("vehiclesData.txt");
 
-//        for (String s : vehicleHolder.getMap().keySet()) {
-//            System.out.println(s);
-//        }
         // Trips
         populateTripData();
         tripHolder.saveList("tripsData.txt");
-        for (Trip trip : tripHolder.getMap().values()) {
-            System.out.println(trip);
-        }
     }
 
     private static void populatePortHolder() {

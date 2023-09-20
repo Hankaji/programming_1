@@ -1,17 +1,19 @@
 package user;
 
+import data.Database;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Authenticator {
-//    public static void main(String[] args) throws FileNotFoundException {;
-//        System.out.println(fetchData(new File("src/data/accounts.txt")));
-//        System.out.println(authenticate("John", "1234"));
-//    }
+    public static User loggedUser;
 
-    public static boolean authenticate(String username, String password) throws FileNotFoundException {
-        Map<String, User> userMap = AccountDatabase.getInstance();
-        return userMap.containsKey(username) && userMap.get(username).getPassword().equals(password);
+    public static boolean authenticate(String username, String password) {
+        Map<String, User> userMap = Database.accountDatabase;
+        if (userMap.containsKey(username) && userMap.get(username).getPassword().equals(password)) {
+            loggedUser = userMap.get(username);
+            return true;
+        } else return false;
     }
 }
