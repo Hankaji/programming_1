@@ -205,6 +205,7 @@ public class DataPopulation {
         Vehicle truck4 = new ReeferTruck("Reefer Truck 4", "tr-4", 800.0, 1000.0, portHolder.getMap().get("p-1"), 14.0, new ArrayList<>());
         Vehicle truck5 = new TankerTruck("Tanker Truck 5", "tr-5", 870.0, 1200.0, portHolder.getMap().get("p-1"), 14.8, new ArrayList<>());
         Vehicle truck6 = new TankerTruck("Tanker Truck 6", "tr-6", 640.0, 1000.0, portHolder.getMap().get("p-1"), 13.2, new ArrayList<>());
+        Vehicle truck420 = new BasicTruck("Basic Truck 420", "tr-420", 100000000.0, 1000000000000.0, portHolder.getMap().get("p-1"), 14.0, new ArrayList<>());
 
         // port 2
         Vehicle truck7 = new BasicTruck("Basic Truck 7", "tr-7", 1000.0, 1000.0, portHolder.getMap().get("p-2"), 14.0, new ArrayList<>());
@@ -296,6 +297,7 @@ public class DataPopulation {
         vehicleHolder.addItem(truck34.getID(), truck34);
         vehicleHolder.addItem(truck35.getID(), truck35);
         vehicleHolder.addItem(truck36.getID(), truck36);
+        vehicleHolder.addItem(truck420.getID(), truck420);
     }
 
     private static void populateTripData() {

@@ -101,118 +101,115 @@ public class Main {
         Menu containersMenu = new Menu();
         Menu managersMenu = new Menu();
         Menu addVehicleMenu = new Menu();
-        Menu trucksMenu = new Menu();
+        Menu trucksMenuSubMenu = new Menu();
 
         // Creating menu events where it opens sub menus
-        MenuEvent ports = new MenuEvent("Ports", portsMenu);
-        MenuEvent vehicles = new MenuEvent("Vehicles", vehiclesMenu);
-        MenuEvent containers = new MenuEvent("Containers", containersMenu);
-        MenuEvent managers = new MenuEvent("Managers", managersMenu);
-        MenuEvent addVehicleEvent = new MenuEvent("Add Vehicle", addVehicleMenu);
+        MenuEvent portsSubMenu = new MenuEvent("Ports", portsMenu);
+        MenuEvent vehiclesSubMenu = new MenuEvent("Vehicles", vehiclesMenu);
+        MenuEvent containersSubMenu = new MenuEvent("Containers", containersMenu);
+        MenuEvent managersSubMenu = new MenuEvent("Managers", managersMenu);
+        MenuEvent addVehicleSubMenu = new MenuEvent("Add Vehicle", addVehicleMenu);
+        MenuEvent addTrucksSubMenu = new MenuEvent("Truck", trucksMenuSubMenu);
 
         // Create menu events for Vehicles
         MenuEvent addShipEvent = new MenuEvent("Ship", () -> addVehicle(Ship.class));
+        MenuEvent addBasicTruckEvent = new MenuEvent("Basic Truck", () -> addVehicle(BasicTruck.class));
+        MenuEvent addReeferTruckEvent = new MenuEvent("Reefer Truck", () -> addVehicle(ReeferTruck.class));
+        MenuEvent addTankerTruckEvent = new MenuEvent("Tanker Truck", () -> addVehicle(TankerTruck.class));
+        MenuEvent removeVehicleEvent = new MenuEvent("Remove vehicle", Main::removeVehicle);
+        MenuEvent viewVehiclesEvent = new MenuEvent("View Vehicles", Database.vehicleHolder::printList);
 
-        MenuEvent addBasicTruck = new MenuEvent("Basic Truck", () -> addVehicle(BasicTruck.class));
-        MenuEvent addReeferTruck = new MenuEvent("Reefer Truck", () -> addVehicle(ReeferTruck.class));
-        MenuEvent addTankerTruck = new MenuEvent("Tanker Truck", () -> addVehicle(TankerTruck.class));
+        trucksMenuSubMenu.addEvent(addBasicTruckEvent);
+        trucksMenuSubMenu.addEvent(addReeferTruckEvent);
+        trucksMenuSubMenu.addEvent(addTankerTruckEvent);
 
-        trucksMenu.addEvent(addBasicTruck);
-        trucksMenu.addEvent(addReeferTruck);
-        trucksMenu.addEvent(addTankerTruck);
-
-        MenuEvent addTrucks = new MenuEvent("Truck", trucksMenu);
 
         addVehicleMenu.addEvent(addShipEvent);
-        addVehicleMenu.addEvent(addTrucks);
+        addVehicleMenu.addEvent(addTrucksSubMenu);
 
         // Creating port events where it adds, removes and views ports
         MenuEvent addPortEvent = new MenuEvent("Add port", Main::addPort);
-        MenuEvent removePort = new MenuEvent("Remove port", Main::removePort);
+        MenuEvent removePortEvent = new MenuEvent("Remove port", Main::removePort);
+        MenuEvent viewPortsEvent = new MenuEvent("View Ports", Database.portHolder::printList);
 
-        MenuEvent viewPorts = new MenuEvent("View Ports", Database.portHolder::printList);
-
-        MenuEvent removeVehicle = new MenuEvent("Remove vehicle", Main::removeVehicle);
-        MenuEvent viewVehicles = new MenuEvent("View Vehicles", Database.vehicleHolder::printList);
 
         // Creating container events where it adds, removes and views containers
-        MenuEvent addContainer = new MenuEvent("Add Container", Main::addContainer);
-        MenuEvent removeContainer = new MenuEvent("Remove Container", Main::removeContainer);
-        MenuEvent viewContainers = new MenuEvent("View Containers", Database.containerHolder::printList);
+        MenuEvent addContainerEvent = new MenuEvent("Add Container", Main::addContainer);
+        MenuEvent removeContainerEvent = new MenuEvent("Remove Container", Main::removeContainer);
+        MenuEvent viewContainersEvent = new MenuEvent("View Containers", Database.containerHolder::printList);
 
         // Creating manager events where it adds, removes and views managers
-        MenuEvent addManager = new MenuEvent("Add Manager", Main::addManager);
-
-        MenuEvent removeManager = new MenuEvent("Remove Manager", Main::removeManager);
-        MenuEvent viewManagers = new MenuEvent("View Managers", AccountDatabase::displayAllUsers);
+        MenuEvent addManagerEvent = new MenuEvent("Add Manager", Main::addManager);
+        MenuEvent removeManagerEvent = new MenuEvent("Remove Manager", Main::removeManager);
+        MenuEvent viewManagersEvent = new MenuEvent("View Managers", AccountDatabase::displayAllUsers);
 
 
         // Adding events to sub port menu
         portsMenu.addEvent(addPortEvent);
-        portsMenu.addEvent(removePort);
-        portsMenu.addEvent(viewPorts);
+        portsMenu.addEvent(removePortEvent);
+        portsMenu.addEvent(viewPortsEvent);
 
         // Adding events to sub vehicle menu
-        vehiclesMenu.addEvent(addVehicleEvent);
-        vehiclesMenu.addEvent(removeVehicle);
-        vehiclesMenu.addEvent(viewVehicles);
+        vehiclesMenu.addEvent(addVehicleSubMenu);
+        vehiclesMenu.addEvent(removeVehicleEvent);
+        vehiclesMenu.addEvent(viewVehiclesEvent);
 
         // Adding events to sub container menu
-        containersMenu.addEvent(addContainer);
-        containersMenu.addEvent(removeContainer);
-        containersMenu.addEvent(viewContainers);
+        containersMenu.addEvent(addContainerEvent);
+        containersMenu.addEvent(removeContainerEvent);
+        containersMenu.addEvent(viewContainersEvent);
 
         // Adding events to sub manager menu
-        managersMenu.addEvent(addManager);
-        managersMenu.addEvent(removeManager);
-        managersMenu.addEvent(viewManagers);
+        managersMenu.addEvent(addManagerEvent);
+        managersMenu.addEvent(removeManagerEvent);
+        managersMenu.addEvent(viewManagersEvent);
 
         // Adding all  (sub menus) to admin menu and port manager menu
         // Admin menu
-        adminMenu.addEvent(ports);
-        adminMenu.addEvent(vehicles);
-        adminMenu.addEvent(containers);
-        adminMenu.addEvent(managers);
+        adminMenu.addEvent(portsSubMenu);
+        adminMenu.addEvent(vehiclesSubMenu);
+        adminMenu.addEvent(containersSubMenu);
+        adminMenu.addEvent(managersSubMenu);
 
         // Port manager menu
-        portManagerMenu.addEvent(ports);
-        portManagerMenu.addEvent(containers);
+        portManagerMenu.addEvent(portsSubMenu);
+        portManagerMenu.addEvent(containersSubMenu);
 
         // Create menu.Menu Events
-        MenuEvent checkin = new MenuEvent("Checkin Vehicles", Main::checkinVehicle);
-        MenuEvent load = new MenuEvent("Load", Main::loadContainer);
-        MenuEvent unload = new MenuEvent("Unload", Main::unloadContainer);
-        MenuEvent refuel = new MenuEvent("Refuel", Main::refuelVehicle);
-        MenuEvent fuelUsed = new MenuEvent("Fuel Used", Main::fuelUsed);
-        MenuEvent containerWeight = new MenuEvent("Container Weight", Main::getTotalContainersWeight);
-        MenuEvent shipsInPort = new MenuEvent("Ships In port", Main::getTotalShipsInPort);
-        MenuEvent tripsInDay = new MenuEvent("Trips In Day", Database.tripHolder::printList);
-        MenuEvent tripFromRange = new MenuEvent("Trip From Range", () -> System.out.println("Trip From Range"));
+        MenuEvent checkinEvent = new MenuEvent("Checkin Vehicles", Main::checkinVehicle);
+        MenuEvent loadEvent = new MenuEvent("Load", Main::loadContainer);
+        MenuEvent unloadEvent = new MenuEvent("Unload", Main::unloadContainer);
+        MenuEvent refuelEvent = new MenuEvent("Refuel", Main::refuelVehicle);
+        MenuEvent fuelUsedEvent = new MenuEvent("Fuel Used", Main::fuelUsed);
+        MenuEvent containerWeightEvent = new MenuEvent("Container Weight", Main::getTotalContainersWeight);
+        MenuEvent shipsInPortEvent = new MenuEvent("Ships In port", Main::getTotalShipsInPort);
+        MenuEvent tripsInDayEvent = new MenuEvent("Trips In Day", Database.tripHolder::printList);
+        MenuEvent tripFromRangeEvent = new MenuEvent("Trip From Range", () -> System.out.println("Trip From Range"));
 
         // Adding all (menu events) to admin menu and port manager menu
         // Admin menu
-        for (MenuEvent menuEvent : Arrays.asList(checkin,
-                load,
-                unload,
-                refuel,
-                fuelUsed,
-                containerWeight,
-                shipsInPort,
-                tripsInDay,
-                tripFromRange)) {
+        for (MenuEvent menuEvent : Arrays.asList(checkinEvent,
+                loadEvent,
+                unloadEvent,
+                refuelEvent,
+                fuelUsedEvent,
+                containerWeightEvent,
+                shipsInPortEvent,
+                tripsInDayEvent,
+                tripFromRangeEvent)) {
             adminMenu.addEvent(menuEvent);
         }
 
         // Port manager menu
-        for (MenuEvent menuEvent : Arrays.asList(checkin,
-                load,
-                unload,
-                refuel,
-                fuelUsed,
-                containerWeight,
-                shipsInPort,
-                tripsInDay,
-                tripFromRange)) {
+        for (MenuEvent menuEvent : Arrays.asList(checkinEvent,
+                loadEvent,
+                unloadEvent,
+                refuelEvent,
+                fuelUsedEvent,
+                containerWeightEvent,
+                shipsInPortEvent,
+                tripsInDayEvent,
+                tripFromRangeEvent)) {
             portManagerMenu.addEvent(menuEvent);
         }
     }
@@ -279,7 +276,7 @@ public class Main {
         // display all vehicles in port that have containers
         System.out.println("Vehicles in " + port.getName() + " that have containers:");
         for (Vehicle vehicle : Database.vehicleHolder.getMap().values()) {
-            if (vehicle.getCurrentPort().getName().equals(port.getName()) && vehicle.getContainers().size() != 0) {
+            if (vehicle.getCurrentPort().getName().equals(port.getName()) && !vehicle.getContainers().isEmpty()) {
                 System.out.println(vehicle);
             }
         }
@@ -581,8 +578,7 @@ public class Main {
 
         // move the vehicle to the destination port
         vehicle.moveToPort(vehicle.getContainers().get(0).getDestinationPort());
-//
-//        // arrive at the destination port
+
 
     }
 
