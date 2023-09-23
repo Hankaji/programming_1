@@ -12,6 +12,16 @@ public class Container implements Serializable {
     private Port currentPort;
     private Port destinationPort;
 
+    private Boolean isLoaded;
+
+
+    public Boolean getLoaded() {
+        return isLoaded;
+    }
+
+    public void setLoaded(Boolean loaded) {
+        isLoaded = loaded;
+    }
 
     public Container(String ID, Double weight, CONTAINER_TYPE CONTAINERType, Port startPort, Port currentPort, Port destinationPort) {
         this.ID = ID;
@@ -20,6 +30,7 @@ public class Container implements Serializable {
         this.startPort = startPort;
         this.currentPort = currentPort;
         this.destinationPort = destinationPort;
+        this.isLoaded = false;
 
         switch (this.CONTAINERType) {
             case DRY_STORAGE -> {
@@ -51,6 +62,7 @@ public class Container implements Serializable {
                 "ID: " + ID +
                 ", weight: " + weight + " tons" +
                 ", type: " + CONTAINERType +
+                ", isLoaded: " + isLoaded +
                 ", shipFuelConsumption: " + shipFuelConsumption + " gallons/km" +
                 ", truckFuelConsumption :" + truckFuelConsumption + " gallons/km" +
                 ", startPort: " + startPort.getName() +
@@ -64,11 +76,11 @@ public class Container implements Serializable {
     }
 
     public Double getShipFuelConsumption() {
-        return  weight * shipFuelConsumption * startPort.getDistance(destinationPort);
+        return  shipFuelConsumption;
     }
 
     public Double getTruckFuelConsumption() {
-        return  weight * truckFuelConsumption * startPort.getDistance(destinationPort);
+        return  truckFuelConsumption;
     }
 
     public String getID() {

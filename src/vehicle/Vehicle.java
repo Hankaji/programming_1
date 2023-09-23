@@ -50,14 +50,17 @@ public abstract class Vehicle implements Serializable {
 
     public void loadContainer(Container container) {
         containers.add(container);
+        container.setLoaded(true);
         // print the vehicle name and the container ID
         System.out.println("Loaded container " + container.getID() + " onto " + this.name);
+
     }
 
 
     public void unloadContainer(Container container) {
         containers.remove(container);
-        System.out.println("Unloaded container " + container.getID() + " from " + this.name);
+        container.setLoaded(false);
+        System.out.println("Unloaded container " + container.getID() + " from " + this.name + " at " + currentPort.getName());
     }
 
     public Double refuelVehicleAndReturnAmount() {
@@ -68,9 +71,6 @@ public abstract class Vehicle implements Serializable {
 
     public void deleteVehicle() {}
 
-    public Boolean checkFuel() {
-        return currentFuel > 0;
-    }
     @Override
     public String toString() {
         return "vehicle{" +
@@ -145,10 +145,85 @@ public abstract class Vehicle implements Serializable {
     public void moveToPort(Port destinationPort) {
         // check if the vehicle has enough fuel to move to the destination port
         double fuelNeeded = 0.0;
+        double fuelConsumption = 0.0;
+        // get weight of each type of container
+        Double dryStorageWeight = 0.0;
+        Double openTopWeight = 0.0;
+        Double openSideWeight = 0.0;
+        Double refrigeratedWeight = 0.0;
+        Double liquidWeight = 0.0;
+
+        // get FuelConsumption of each type of container by finding the first container of that type and getting its fuel consumption
+        Double dryStorageFuelConsumption = 0.0;
+        Double openTopFuelConsumption = 0.0;
+        Double openSideFuelConsumption = 0.0;
+        Double refrigeratedFuelConsumption = 0.0;
+        Double liquidFuelConsumption = 0.0;
+        // find the first container of each type
         for (Container container : containers) {
-            // fuelNeeded depends on the type of vehicle
-            fuelNeeded += (this instanceof Ship) ? container.getShipFuelConsumption() * currentPort.getDistance(destinationPort) : container.getTruckFuelConsumption() * currentPort.getDistance(destinationPort);
+            if (container.getType() == CONTAINER_TYPE.DRY_STORAGE) {
+                // check vehicle type
+                if (this instanceof Ship) {
+                    dryStorageFuelConsumption = container.getShipFuelConsumption();
+                } else {
+                    dryStorageFuelConsumption = container.getTruckFuelConsumption();
+                }
+                break;
+            }
         }
+        for (Container container : containers) {
+            if (container.getType() == CONTAINER_TYPE.OPEN_TOP) {
+                if (this instanceof Ship) {
+                    openTopFuelConsumption = container.getShipFuelConsumption();
+                } else {
+                    openTopFuelConsumption = container.getTruckFuelConsumption();
+                }
+                break;
+            }
+        }
+        for (Container container : containers) {
+            if (container.getType() == CONTAINER_TYPE.OPEN_SIDE) {
+                if (this instanceof Ship) {
+                    openSideFuelConsumption = container.getShipFuelConsumption();
+                } else {
+                    openSideFuelConsumption = container.getTruckFuelConsumption();
+                }
+                break;
+            }
+        }
+        for (Container container : containers) {
+            if (container.getType() == CONTAINER_TYPE.REFRIGERATED) {
+                if (this instanceof Ship) {
+                    refrigeratedFuelConsumption = container.getShipFuelConsumption();
+                } else {
+                    refrigeratedFuelConsumption = container.getTruckFuelConsumption();
+                }
+                break;
+            }
+        }
+        for (Container container : containers) {
+            if (container.getType() == CONTAINER_TYPE.LIQUID) {
+                if (this instanceof Ship) {
+                    liquidFuelConsumption = container.getShipFuelConsumption();
+                } else {
+                    liquidFuelConsumption = container.getTruckFuelConsumption();
+                }
+                break;
+            }
+        }
+        // use loop to get weight of each type of container
+        for (Container container : containers) {
+            switch (container.getType()) {
+                case DRY_STORAGE -> dryStorageWeight += container.getWeight();
+                case OPEN_TOP -> openTopWeight += container.getWeight();
+                case OPEN_SIDE -> openSideWeight += container.getWeight();
+                case REFRIGERATED -> refrigeratedWeight += container.getWeight();
+                case LIQUID -> liquidWeight += container.getWeight();
+            }
+        }
+        // calculate fuel needed
+        fuelNeeded = this.getCurrentPort().getDistance(destinationPort) * (dryStorageWeight * dryStorageFuelConsumption + openTopWeight * openTopFuelConsumption + openSideWeight * openSideFuelConsumption + refrigeratedWeight * refrigeratedFuelConsumption + liquidWeight * liquidFuelConsumption);
+
         System.out.println("Current fuel: " + currentFuel + " gallons");
         System.out.println("Fuel needed: " + fuelNeeded + " gallons");
 

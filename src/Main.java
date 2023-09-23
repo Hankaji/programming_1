@@ -169,12 +169,7 @@ public class Main {
         managersMenu.addEvent(editManagersEvent, UserRoles.ADMIN);
         managersMenu.addEvent(editProfileEvent, UserRoles.PORT_MANAGER);
 
-        // Adding all  (sub menus) to admin menu and port manager menu
-        // Admin menu
-        appMenu.addEvent(portsSubMenu);
-        appMenu.addEvent(vehiclesSubMenu);
-        appMenu.addEvent(containersSubMenu);
-        appMenu.addEvent(managersSubMenu);
+        // Adding events to main menu
 
         // Create menu.Menu Events
         MenuEvent checkinEvent = new MenuEvent("Checkin Vehicles", Main::checkinVehicle);
@@ -187,8 +182,12 @@ public class Main {
         MenuEvent tripsInDayEvent = new MenuEvent("Trips In Day", Database.tripHolder::printList);
         MenuEvent tripFromRangeEvent = new MenuEvent("Trip From Range", () -> System.out.println("Trip From Range"));
 
-        // Adding all (menu events) to admin menu and port manager menu
-        // Adding events to menu
+        appMenu.addEvent(checkinEvent);
+        appMenu.addEvent(portsSubMenu);
+        appMenu.addEvent(vehiclesSubMenu);
+        appMenu.addEvent(containersSubMenu);
+        appMenu.addEvent(managersSubMenu);
+
         for (MenuEvent menuEvent : Arrays.asList(loadEvent,
                 unloadEvent,
                 refuelEvent,
@@ -204,6 +203,10 @@ public class Main {
     private static void fuelUsed() {
         // get port
         Port port = checkUserPort();
+        if (port == null) {
+            System.out.println("No port found.");
+            return;
+        }
 
         System.out.println("Refuels in " + port.getName() + ":");
         Double totalFuel = 0.0;
@@ -235,6 +238,10 @@ public class Main {
     private static void refuelVehicle() {
         // get port
         Port port = checkUserPort();
+        if (port == null) {
+            System.out.println("No port found.");
+            return;
+        }
         // display list of vehicles in port
         System.out.println("Vehicles in " + port.getName() + ":");
         for (Vehicle vehicle : Database.vehicleHolder.getMap().values()) {
@@ -260,13 +267,23 @@ public class Main {
     private static void unloadContainer() {
         // get current port
         Port port = checkUserPort();
+        if (port == null) {
+            System.out.println("No port found.");
+            return;
+        }
+
 
         // display all vehicles in port that have containers
         System.out.println("Vehicles in " + port.getName() + " that have containers:");
-        for (Vehicle vehicle : Database.vehicleHolder.getMap().values()) {
-            if (vehicle.getCurrentPort().getName().equals(port.getName()) && !vehicle.getContainers().isEmpty()) {
-                System.out.println(vehicle);
+        try {
+            for (Vehicle vehicle : Database.vehicleHolder.getMap().values()) {
+                if (vehicle.getCurrentPort().getName().equals(port.getName()) && !vehicle.getContainers().isEmpty()) {
+                    System.out.println(vehicle);
+                }
             }
+        } catch (Exception e) {
+            System.out.println("No vehicles in " + port.getName() + " that have containers");
+            return;
         }
 
         // get vehicle to unload using input validator
@@ -275,9 +292,12 @@ public class Main {
                 "Vehicle doesn't exist, please try again.");
         // unload all containers in the vehicle
         Vehicle vehicle = Database.vehicleHolder.getMap().get(vehicleID);
-        List<Container> containersToUnload = vehicle.getContainers();
-        vehicle.setContainers(new ArrayList<>());
-        for (Container container : containersToUnload) {
+        // get new list of containers in the vehicle to avoid concurrent modification exception
+        List<Container> containers = new ArrayList<>(vehicle.getContainers());
+        for (Container container : containers) {
+            // unload container
+            vehicle.unloadContainer(container);
+            // set container's current port to the current port
             container.setCurrentPort(port);
         }
         System.out.println("Containers unloaded successfully!");
@@ -288,6 +308,10 @@ public class Main {
         // Access vehicle database to get vehicles that are in the current port
         // Access container database to get containers that are in the current port
         Port port = checkUserPort();
+        if (port == null) {
+            System.out.println("No port found.");
+            return;
+        }
         // Access trip database to get trips that do not have arrival date with arrival port as current port
         List<Trip> arrivingTrips = Database.tripHolder.getMap().values().stream().filter(trip -> trip.getStatus() == TRIP_STATUS.ARRIVING && trip.getEndPort().getName().equals(port.getName())).toList();
         // for each List, change status to ARRIVED, and set arrival date, set vehicle's current port to the port
@@ -297,7 +321,6 @@ public class Main {
             vehicle.setCurrentPort(port);
 
             List<Container> containersToUpdate = vehicle.getContainers();
-            vehicle.setContainers(new ArrayList<>());
             for (Container container : containersToUpdate) {
                 container.setCurrentPort(port);
             }
@@ -322,6 +345,7 @@ public class Main {
         String portID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value),
                 "Please enter the port ID (p-*): ",
                 "Port doesn't exist, please try again.");
+        if (portID.equals("-1")) return null;
         System.out.println("Current port: " + Database.portHolder.getMap().get(portID).getName());
         return Database.portHolder.getMap().get(portID);
     }
@@ -329,6 +353,10 @@ public class Main {
     private static void getTotalContainersWeight() {
         // Get the port
         Port port = checkUserPort();
+        if (port == null) {
+            System.out.println("No port found.");
+            return;
+        }
 
         // calculate the total weight
         Double totalWeight = 0.0;
@@ -344,6 +372,10 @@ public class Main {
     private static void getTotalShipsInPort() {
         // Get the port
         Port port = checkUserPort();
+        if (port == null) {
+            System.out.println("No port found.");
+            return;
+        }
 
         // Get and count the ships
         int totalShips = 0;
@@ -388,6 +420,7 @@ public class Main {
         System.out.println("\nPlease enter the manager's username: ");
         String managerUsername = InputValidator.validateString(value -> AccountDatabase.getUser(value) instanceof PortManager);
         AccountDatabase.removeUser(managerUsername);
+        if (managerUsername.equals("-1")) return;
         System.out.println("Manager removed successfully!");
     }
 
@@ -406,9 +439,18 @@ public class Main {
     }
 
     private static void editManager() {
+        // print all managers in the database
+        System.out.println("List of managers to choose from: ");
+        AccountDatabase.displayAllUsers();
+
         String managerName = InputValidator.validateString(Database.accountDatabase::containsKey,
                 "Please enter a manager username: ",
                 "Manager doesn't exist, please try again.");
+
+        // print all ports in the database
+        System.out.println("List of ports to choose from: ");
+        Database.portHolder.printList();
+
         String vehiclePortID = InputValidator.validateString(v -> Database.portHolder.getMap().containsKey(v),
                 "Please enter your new working port ID (p-*): ",
                 "Port not found. Try Again!");
@@ -492,24 +534,43 @@ public class Main {
     }
 
     private static void removeVehicle() {
+        Port port = checkUserPort();
+        if (port == null) {
+            System.out.println("No port found.");
+            return;
+        }
+
+        System.out.println("List of vehicles to choose from: ");
+        for (Vehicle vehicle : Database.vehicleHolder.getMap().values()) {
+            if (vehicle.getCurrentPort().getName().equals(port.getName())) {
+                System.out.println(vehicle);
+            }
+        }
+
         System.out.print("Please enter the vehicle ID (sh-* / tr-*): ");
-        String vehicleID = InputValidator.validateString(value -> Database.vehicleHolder.getMap().containsKey(value));
+        String vehicleID = InputValidator.validateString(value -> Database.vehicleHolder.getMap().containsKey(value) && Database.vehicleHolder.getMap().get(value).getCurrentPort().getName().equals(port.getName()));
+        if (vehicleID.equals("-1")) return;
         Database.vehicleHolder.getMap().remove(vehicleID);
         System.out.println("Vehicle removed successfully!");
     }
 
     private static void editVehicle() {
-        // User input
+        // print all vehicles in the database
+        System.out.println("List of vehicles to choose from: ");
+        Database.vehicleHolder.printList();
+
         String vehicleID = InputValidator.validateString(v -> Database.vehicleHolder.getMap().containsKey(v),
                 "Please enter the vehicle ID (sh-* / tr-*): ",
                 "Vehicle doesn't exists, please try again.");
         String vehicleName = InputValidator.validateString("Please enter the vehicle's name: ");
-        String newVehicleID = InputValidator.validateString(v -> !Database.vehicleHolder.getMap().containsKey(v),
-                "Please enter the vehicle's ID (sh-* / tr-*): ",
-                "Vehicle already exists, please try again.");
         Double vehicleCurrentFuel = InputValidator.validateDouble("Please enter the vehicle's current fuel: ");
         Double vehicleMaxFuel = InputValidator.validateDouble("Please enter the vehicle's max fuel: ");
         Double vehicleCarryingCapacity = InputValidator.validateDouble("Please enter the vehicle's carrying capacity: ");
+
+        // print all ports in the database
+        System.out.println("List of ports to choose from: ");
+        Database.portHolder.printList();
+
         String vehiclePortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value),
                 "Please enter the vehicle's current port ID (p-*): ",
                 "Port not found. Try Again!");
@@ -520,7 +581,6 @@ public class Main {
 
         // Edit the vehicle
         vehicle.setName(vehicleName);
-        vehicle.setID(newVehicleID);
         vehicle.setCurrentFuel(vehicleCurrentFuel);
         vehicle.setMaxFuel(vehicleMaxFuel);
         vehicle.setCarryingCapacity(vehicleCarryingCapacity);
@@ -534,6 +594,10 @@ public class Main {
     @SuppressWarnings("unchecked")
     private static void addContainer() {
         Port port = checkUserPort();
+        if (port == null) {
+            System.out.println("No port found.");
+            return;
+        }
         String containerID = IDGenerator.getNextAvailableID("c", Database.containerHolder.getMap().keySet().stream().toList());
 
         double containerWeight = InputValidator.validateDouble(value -> value > 0,
@@ -565,12 +629,17 @@ public class Main {
 
         System.out.println("Please enter the port ID (p-*): ");
         String portID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value));
+        if (portID.equals("-1")) return;
         Database.portHolder.removeFromMap(portID);
         System.out.println("Port removed successfully!");
     }
 
     private static void removeContainer() {
         Port port = checkUserPort();
+        if (port == null) {
+            System.out.println("No port found.");
+            return;
+        }
 
         // print out all containers in the port
         if (Database.containerHolder.getMap().values().stream().noneMatch(container -> container.getCurrentPort().getName().equals(port.getName()))) {
@@ -580,28 +649,44 @@ public class Main {
 
         System.out.println("List of containers to choose from: ");
         for (Container container : Database.containerHolder.getMap().values()) {
-            if (container.getStartPort().getName().equals(port.getName())) {
+            if (container.getCurrentPort().getName().equals(port.getName())) {
                 System.out.println(container);
             }
         }
 
-        System.out.println("\nPlease enter the container ID (c-*): ");
-        // containerId must be in the port
-        String containerID = InputValidator.validateString(value -> Database.containerHolder.getMap().containsKey(value) && Database.containerHolder.getMap().get(value).getCurrentPort().getName().equals(port.getName()));
+        // get container to remove using input validator
+        // container must have current port as this port
+
+        String containerID = InputValidator.validateString(value -> Database.containerHolder.getMap().containsKey(value) && Database.containerHolder.getMap().get(value).getCurrentPort().getName().equals(port.getName()),
+                "Please enter the container ID (c-*): ",
+                "Container doesn't exist, please try again.");
+        if (containerID.equals("-1")) return;
         Database.containerHolder.removeFromMap(containerID);
         System.out.println("Container removed successfully!");
     }
 
     private static void editContainer() {
+        Port port = checkUserPort();
+        if (port == null) {
+            System.out.println("No port found.");
+            return;
+        }
+
+        // print all containers in the database
+        System.out.println("List of containers to choose from: ");
+        Database.containerHolder.printList();
+
         String containerID = InputValidator.validateString(v -> Database.containerHolder.getMap().containsKey(v),
                 "Please enter the container ID (c-*): ",
                 "Container doesn't exists, please try again.");
-        String newContainerID = InputValidator.validateString(v -> !Database.containerHolder.getMap().containsKey(v),
-                "Please enter the container ID (c-*): ",
-                "Container already exists, please try again.");
+
         double containerWeight = InputValidator.validateDouble(value -> value > 0,
                 "Please enter the container weight: ",
                 "weight cant be negative or zero, please try again.");
+
+        // print all ports in the database
+        System.out.println("List of ports to choose from: ");
+        Database.portHolder.printList();
 
         String startPortID = InputValidator.validateString(value -> Database.portHolder.getMap().containsKey(value),
                 "Please enter the start port id: ",
@@ -619,7 +704,6 @@ public class Main {
         Port destinationPort = Database.portHolder.getMap().get(destinationPortID);
 
         Container container = Database.containerHolder.getMap().get(containerID);
-        container.setID(newContainerID);
         container.setWeight(containerWeight);
         container.setStartPort(startPort);
         container.setCurrentPort(currentPort);
@@ -632,75 +716,94 @@ public class Main {
 
     private static void loadContainer() {
         Port port = checkUserPort();
+        if (port == null) {
+            System.out.println("No port found.");
+            return;
+        }
 
-        // Check if there is any vehicle in the current port
-        if (Database.vehicleHolder.getMap().values().stream().noneMatch(vehicle -> vehicle.getCurrentPort().getName().equals(port.getName()))) {
+        // display all containers in the port not loaded in any vehicle
+        try {
+            System.out.println("Containers in " + port.getName() + ":");
+            for (Container container : Database.containerHolder.getMap().values()) {
+                if (container.getCurrentPort().getName().equals(port.getName()) && !container.getLoaded()) {
+                    System.out.println(container);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("No containers or vehic " + port.getName());
+            return;
+        }
+            System.out.println();
+        try {
+            // display all vehicles in the port
+            System.out.println("Vehicles in " + port.getName() + ":");
+            for (Vehicle vehicle : Database.vehicleHolder.getMap().values()) {
+                if (vehicle.getCurrentPort().getName().equals(port.getName())) {
+                    System.out.println(vehicle);
+                }
+            }
+        } catch (Exception e) {
             System.out.println("No vehicles in " + port.getName());
             return;
         }
 
-        displayPortItems(port);
-        Scanner input = new Scanner(System.in);
-
-        System.out.println("Please enter the vehicle ID (sh-* / tr-*): ");
-        String vehicleID = InputValidator.validateString(value -> Database.vehicleHolder.getMap().containsKey(value));
+        System.out.print("Please enter the vehicle ID (sh-* / tr-*): ");
+        String vehicleID = InputValidator.validateString(value -> Database.vehicleHolder.getMap().containsKey(value) && Database.vehicleHolder.getMap().get(value).getCurrentPort().getName().equals(port.getName()));
 
         Vehicle vehicle = Database.vehicleHolder.getMap().get(vehicleID);
         while (true) {
-            System.out.println("Please enter the container ID (c-*): ");
-            String containerID = InputValidator.validateString(value -> Database.containerHolder.getMap().containsKey(value));
+            // print all containers in the port that is not loaded in any vehicle
+            System.out.println("List of containers to choose from: ");
+            for (Container container : Database.containerHolder.getMap().values()) {
+                if (container.getCurrentPort().getName().equals(port.getName()) && !container.getLoaded()) {
+                    System.out.println(container);
+                }
+            }
+
+
+            System.out.print("Please enter the container ID (c-*): ");
+            String containerID = InputValidator.validateString(value -> Database.containerHolder.getMap().containsKey(value) && Database.containerHolder.getMap().get(value).getCurrentPort().getName().equals(port.getName()) && !Database.containerHolder.getMap().get(value).getLoaded());
             Container container = Database.containerHolder.getMap().get(containerID);
             // check if containerID has same destination as first container in vehicle
+
             try {
+                // check if container weight + all other containers on vehicle is less than vehicle carrying capacity
+                if (vehicle.getContainers().stream().mapToDouble(Container::getWeight).sum() + container.getWeight() > vehicle.getCarryingCapacity()) {
+                    System.out.println("Container " + containerID + " is too heavy for the vehicle!");
+                    continue;
+                }
+
                 if (vehicle.getContainers().get(0).getDestinationPort().getName().equals(container.getDestinationPort().getName())) {
-                    System.out.println("Container " + containerID + " loaded successfully!");
-                    vehicle.loadContainer(container);
+                    if (vehicle instanceof Truck) {
+                        ((Truck) vehicle).loadContainer(container);
+                    } else {
+                        vehicle.loadContainer(container);
+                    }
                 } else {
                     System.out.println("Container " + containerID + " has different destination port than the first container in the vehicle!");
                 }
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("Container " + containerID + " loaded successfully!");
-                vehicle.loadContainer(container);
+                if (vehicle instanceof Truck) {
+                    ((Truck) vehicle).loadContainer(container);
+                } else {
+                    vehicle.loadContainer(container);
+                }
             }
-            System.out.println("Do you want to load another container? (Y/N)");
-            String choice = InputValidator.validateString(value -> value.equalsIgnoreCase("Y") || value.equalsIgnoreCase("N"));
-            if (choice.equalsIgnoreCase("N")) {
-                break;
-            }
+            if(!InputValidator.validateBoolean("Do you want to load another container? (Y/N)")) break;
         }
-
         // move the vehicle to the destination port
         vehicle.moveToPort(vehicle.getContainers().get(0).getDestinationPort());
-
-
-    }
-
-    private static void displayPortItems(Port port) {
-        // display all containers in the port
-        System.out.println("Containers in " + port.getName() + ":");
-        for (Container container : Database.containerHolder.getMap().values()) {
-            if (container.getStartPort().getName().equals(port.getName())) {
-                System.out.println(container);
-            }
-        }
-        System.out.println();
-        // display all vehicles in the port
-        System.out.println("Vehicles in " + port.getName() + ":");
-        for (Vehicle vehicle : Database.vehicleHolder.getMap().values()) {
-            if (vehicle.getCurrentPort().getName().equals(port.getName())) {
-                System.out.println(vehicle);
-            }
-        }
     }
 
     private static void editPort() {
+        // print all ports in the database
+        System.out.println("List of ports to choose from: ");
+        Database.portHolder.printList();
+
         // User input
         String portID = InputValidator.validateString(v -> Database.portHolder.getMap().containsKey(v),
                 "Please enter the port ID (p-*): ",
                 "Port ID doesn't exist, please try again.");
-        String newPortID = InputValidator.validateString(v -> !Database.portHolder.getMap().containsKey(v),
-                "Please enter the new port ID (p-*): ",
-                "Port ID already exist, please try again.");
         String portName = InputValidator.validateString("Please enter the port's name");
         Double portLatitude = InputValidator.validateDouble("Please enter the port's latitude");
         Double portLongitude = InputValidator.validateDouble("Please enter the port's longitude");
@@ -709,7 +812,6 @@ public class Main {
 
         // Edit port
         Port port = Database.portHolder.getMap().get(portID);
-        port.setID(newPortID);
         port.setName(portName);
         port.setLocation(new Location(portLatitude, portLongitude));
         port.setStorageCapacity(portStorageCapacity);

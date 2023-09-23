@@ -36,8 +36,12 @@ public class Trip implements Serializable {
 
     // Display date, month and year from a date object
     public static String displayDate(Date date) {
-        String[] dateArr = date.toString().split(" ");
-        return dateArr[3] + " " + dateArr[2] + " " + dateArr[1] + " " + dateArr[5];
+        try {
+            String[] dateArr = date.toString().split(" ");
+            return dateArr[3] + " " + dateArr[2] + " " + dateArr[1] + " " + dateArr[5];
+        } catch (NullPointerException e) {
+            return "Not arrived yet";
+        }
     }
 
     public void setArrivalDate() {

@@ -19,8 +19,7 @@ public class InputValidator {
 
     public static int validateInt(Function<Integer, Boolean> function, String question, String errorMessage) {
         Scanner scanner = new Scanner(System.in);
-        int attempts = 1;
-        while (attempts <= 3) {
+        while (true) {
             try {
                 System.out.print(question);
                 int userInput = scanner.nextInt();
@@ -34,10 +33,7 @@ public class InputValidator {
             } catch (Exception e) {
                 System.out.println("Error occurred, please try again.");
             }
-            attempts++;
         }
-        System.out.println("Too many attempts. Exiting program.");
-        return -1;
     }
 
     public static double validateDouble(String question) {
@@ -54,8 +50,7 @@ public class InputValidator {
 
     public static double validateDouble(Function<Double, Boolean> function, String question, String errorMessage) {
         Scanner scanner = new Scanner(System.in);
-        int attempts = 1;
-        while (attempts <= 3) {
+        while (true) {
             try {
                 System.out.print(question);
                 double userInput = scanner.nextDouble();
@@ -69,10 +64,7 @@ public class InputValidator {
             } catch (Exception e) {
                 System.out.println("Error occurred, please try again.");
             }
-            attempts++;
         }
-        System.out.println("Too many attempts. Exiting program.");
-        return -1;
     }
 
     public static String validateString(String question) {
@@ -89,8 +81,7 @@ public class InputValidator {
 
     public static String validateString(Function<String, Boolean> function, String question, String errorMessage) {
         Scanner scanner = new Scanner(System.in);
-        int attempts = 1;
-        while (attempts <= 3) {
+        while (true) {
             try {
                 System.out.print(question);
                 String userInput = scanner.nextLine();
@@ -104,15 +95,12 @@ public class InputValidator {
             } catch (Exception e) {
                 System.out.println("Error occurred, please try again.");
             }
-            attempts++;
         }
-        System.out.println("Too many attempts. Exiting program.");
-        return "-1";
     }
 
     public static boolean validateBoolean(String question) {
         String answer = validateString((v) -> Arrays.asList("true", "false", "t", "f", "yes", "no", "y", "n").contains(v.toLowerCase()),
-                question + " (True / False): ",
+                question,
                 "Invalid input. Please enter a valid boolean.");
         return !answer.equals("-1") && Arrays.asList("true", "t", "yes", "y").contains(answer.toLowerCase());
     }

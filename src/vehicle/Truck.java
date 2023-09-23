@@ -19,4 +19,8 @@ public abstract class Truck extends Vehicle {
             System.out.println("Cannot load container " + container.getID() + " onto " + this.getName());
         }
     }
+
+    public List<CONTAINER_TYPE> getCarriableContainers() {
+        return carriableContainers;
+    }
 }
