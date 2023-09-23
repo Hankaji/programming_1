@@ -1,5 +1,6 @@
 package port;
 
+import data.Database;
 import vehicle.*;
 
 import java.io.Serializable;
@@ -38,6 +39,20 @@ public class Trip implements Serializable {
     public static String displayDate(Date date) {
         String[] dateArr = date.toString().split(" ");
         return dateArr[3] + " " + dateArr[2] + " " + dateArr[1] + " " + dateArr[5];
+    }
+
+    public void checkTripExistingTime() {
+        Date currentDate = new Date();
+        // Get different between current date and departure date
+        long diff = currentDate.getTime() - arrivalDate.getTime();
+
+        // Get different in seconds
+        long diffSeconds = diff / (1000 * 60 * 60 * 24);
+
+        // If different is more than 7 days, delete trip
+        if (diffSeconds >= 7) {
+            Database.tripHolder.getMap().remove(ID);
+        }
     }
 
     public void setArrivalDate() {

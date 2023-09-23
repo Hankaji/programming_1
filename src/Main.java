@@ -5,7 +5,6 @@ import user.*;
 import utils.Divider;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
 
@@ -27,11 +26,17 @@ public class Main {
     public static void main(String[] args) throws IOException {
         // Setting up
         AccountDatabase.getInstance();
+        deleteTripsAfter7Days();
         loggedUser = displayHomePage();
         setUpMenu();
 
         // Run the program
         appMenu.run();
+    }
+
+    private static void deleteTripsAfter7Days() {
+        List<Trip> tripsToDelete = Database.tripHolder.getMap().values().stream().toList();
+        tripsToDelete.forEach(Trip::checkTripExistingTime);
     }
 
     private static User displayHomePage() throws FileNotFoundException {

@@ -314,6 +314,7 @@ public class DataPopulation {
         Trip trip18 = new Trip("t-18", vehicleHolder.getMap().get("tr-16"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-6"), portHolder.getMap().get("p-1"));
         Trip trip19 = new Trip("t-19", vehicleHolder.getMap().get("tr-30"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-1"), portHolder.getMap().get("p-2"));
         Trip trip20 = new Trip("t-20", vehicleHolder.getMap().get("sh-8"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-2"), portHolder.getMap().get("p-3"));
+        Trip trip21 = new Trip("t-21", vehicleHolder.getMap().get("sh-11"), new Date(), new Date(), portHolder.getMap().get("p-2"), portHolder.getMap().get("p-3"));
 
 
         // set all trips to ARRIVED
@@ -337,6 +338,7 @@ public class DataPopulation {
         trip18.setStatus(TRIP_STATUS.ARRIVED);
         trip19.setStatus(TRIP_STATUS.ARRIVED);
         trip20.setStatus(TRIP_STATUS.ARRIVED);
+        trip21.setStatus(TRIP_STATUS.ARRIVED);
 
 
         // Add all trips to tripHolder
@@ -360,6 +362,7 @@ public class DataPopulation {
         tripHolder.addItem(trip18.getID(), trip18);
         tripHolder.addItem(trip19.getID(), trip19);
         tripHolder.addItem(trip20.getID(), trip20);
+        tripHolder.addItem(trip21.getID(), trip21);
     }
 
     public static Date generateRandomDates(int minDays, int maxDays) {
