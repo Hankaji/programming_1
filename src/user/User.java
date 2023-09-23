@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 public abstract class User implements Serializable {
     protected final String name;
-    protected final String password;
+    protected String password;
     protected Menu userMenu;
 
     public User(String name, String password) {
@@ -29,5 +29,9 @@ public abstract class User implements Serializable {
 
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

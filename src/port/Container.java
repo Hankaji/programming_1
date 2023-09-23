@@ -54,6 +54,7 @@ public class Container implements Serializable {
                 ", shipFuelConsumption: " + shipFuelConsumption + " gallons/km" +
                 ", truckFuelConsumption :" + truckFuelConsumption + " gallons/km" +
                 ", startPort: " + startPort.getName() +
+                ", currentPort: " + currentPort.getName() +
                 ", destinationPort: " + destinationPort.getName() +
                 '}';
     }

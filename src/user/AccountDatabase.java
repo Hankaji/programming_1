@@ -36,6 +36,7 @@ public class AccountDatabase {
         System.out.println("All users:");
         for (Map.Entry<String, User> entry : usersInstance.entrySet()) {
             System.out.println(entry.getValue());
+            System.out.println();
         }
         Divider.printDivider();
     }

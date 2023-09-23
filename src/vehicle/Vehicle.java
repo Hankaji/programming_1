@@ -5,6 +5,7 @@ import port.*;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public abstract class Vehicle implements Serializable {
@@ -26,7 +27,7 @@ public abstract class Vehicle implements Serializable {
     private Port currentPort;
     private List<Container> containers;
 
-    protected Vehicle(String ID, String name, Double currentFuel, Double maxFuel, Port port ,Double carryingCapacity, List<Container> containers) {
+    protected Vehicle(String name, String ID, Double currentFuel, Double maxFuel, Port port ,Double carryingCapacity, List<Container> containers) {
         this.name = name;
         this.ID = ID;
         this.currentFuel = currentFuel;
@@ -79,7 +80,7 @@ public abstract class Vehicle implements Serializable {
                 ", maxFuel: " + maxFuel +
                 ", carryingCapacity: " + carryingCapacity +
                 ", containers: " + containers +
-                ", currentPort: " + currentPort.getName()  +
+                ", currentPort: " + ((currentPort != null) ? currentPort.getName() : "sail away")   +
                 '}';
     }
 
@@ -145,12 +146,15 @@ public abstract class Vehicle implements Serializable {
         // check if the vehicle has enough fuel to move to the destination port
         double fuelNeeded = 0.0;
         for (Container container : containers) {
-            fuelNeeded += container.getShipFuelConsumption() * currentPort.getDistance(destinationPort);
+            // fuelNeeded depends on the type of vehicle
+            fuelNeeded += (this instanceof Ship) ? container.getShipFuelConsumption() * currentPort.getDistance(destinationPort) : container.getTruckFuelConsumption() * currentPort.getDistance(destinationPort);
         }
+        System.out.println("Current fuel: " + currentFuel + " gallons");
+        System.out.println("Fuel needed: " + fuelNeeded + " gallons");
+
         if (currentFuel >= fuelNeeded) {
             // if it does, then move the vehicle to the destination port
             System.out.println(this.name + " moved from " + currentPort.getName() + " to " + destinationPort.getName());
-            currentPort = null;
             currentFuel -= fuelNeeded;
         } else {
             // if it doesn't, then print an error message
@@ -163,10 +167,35 @@ public abstract class Vehicle implements Serializable {
         int tripID = Database.tripHolder.getMap().values().toArray().length;
         String tripIDString =  "t-" + tripID;
         Trip trip = new Trip(tripIDString, this, currentPort, destinationPort);
+        currentPort = null;
+
         Database.tripHolder.addItem(tripIDString, trip);
     }
 
-    // create an arrive method
+    public void refuel() {
+        // check if the vehicle is at a port
+
+        // check if the vehicle has enough fuel
+        if (Objects.equals(currentFuel, maxFuel)) {
+            System.out.println("Cannot refuel " + this.name + " because it is already full");
+            return;
+        }
+        // refuel the vehicle
+
+        Double fuelNeeded = maxFuel - currentFuel;
+
+        currentFuel = maxFuel;
+
+        // create a refuel
+        // get refuel id by checking refuel database
+        int refuelID = Database.refuelHolder.getMap().values().toArray().length;
+        String refuelIDString =  "r-" + refuelID;
+        Refuel refuel = new Refuel(refuelIDString, fuelNeeded, currentPort, this);
+        Database.refuelHolder.addItem(refuelIDString, refuel);
+
+        System.out.println(this.name + " refueled at " + currentPort.getName() + " for " + fuelNeeded + " gallons");
+    }
+
 
 }
 
