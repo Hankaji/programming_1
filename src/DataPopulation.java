@@ -1,7 +1,4 @@
-import port.CONTAINER_TYPE;
-import port.Container;
-import port.Port;
-import port.Trip;
+import port.*;
 import user.AccountDatabase;
 import user.Admin;
 import user.PortManager;
@@ -242,6 +239,7 @@ public class DataPopulation {
         Vehicle truck35 = new TankerTruck("Basic truck 35", "tr-35", 980.0, 1400.0, portHolder.getMap().get("p-3"), 10.1, new ArrayList<>());
         Vehicle truck36 = new TankerTruck("Basic truck 36", "tr-36", 1080.0, 1000.0, portHolder.getMap().get("p-3"), 12.0, new ArrayList<>());
 
+
         // add all vehicles to vehicleHolder
         vehicleHolder.addItem(ship1.getID(), ship1);
         vehicleHolder.addItem(ship2.getID(), ship2);
@@ -296,7 +294,6 @@ public class DataPopulation {
 
     private static void populateTripData() {
         // Crete 20 trips
-        System.out.println(vehicleHolder.getMap().get("sh-1"));
         Trip trip1 = new Trip("t-1", vehicleHolder.getMap().get("sh-1"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-1"), portHolder.getMap().get("p-2"));
         Trip trip2 = new Trip("t-2", vehicleHolder.getMap().get("tr-12"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-2"), portHolder.getMap().get("p-3"));
         Trip trip3 = new Trip("t-3", vehicleHolder.getMap().get("sh-3"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-3"), portHolder.getMap().get("p-4"));
@@ -317,6 +314,30 @@ public class DataPopulation {
         Trip trip18 = new Trip("t-18", vehicleHolder.getMap().get("tr-16"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-6"), portHolder.getMap().get("p-1"));
         Trip trip19 = new Trip("t-19", vehicleHolder.getMap().get("tr-30"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-1"), portHolder.getMap().get("p-2"));
         Trip trip20 = new Trip("t-20", vehicleHolder.getMap().get("sh-8"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-2"), portHolder.getMap().get("p-3"));
+
+
+        // set all trips to ARRIVED
+        trip1.setStatus(TRIP_STATUS.ARRIVED);
+        trip2.setStatus(TRIP_STATUS.ARRIVED);
+        trip3.setStatus(TRIP_STATUS.ARRIVED);
+        trip4.setStatus(TRIP_STATUS.ARRIVED);
+        trip5.setStatus(TRIP_STATUS.ARRIVED);
+        trip6.setStatus(TRIP_STATUS.ARRIVED);
+        trip7.setStatus(TRIP_STATUS.ARRIVED);
+        trip8.setStatus(TRIP_STATUS.ARRIVED);
+        trip9.setStatus(TRIP_STATUS.ARRIVED);
+        trip10.setStatus(TRIP_STATUS.ARRIVED);
+        trip11.setStatus(TRIP_STATUS.ARRIVED);
+        trip12.setStatus(TRIP_STATUS.ARRIVED);
+        trip13.setStatus(TRIP_STATUS.ARRIVED);
+        trip14.setStatus(TRIP_STATUS.ARRIVED);
+        trip15.setStatus(TRIP_STATUS.ARRIVED);
+        trip16.setStatus(TRIP_STATUS.ARRIVED);
+        trip17.setStatus(TRIP_STATUS.ARRIVED);
+        trip18.setStatus(TRIP_STATUS.ARRIVED);
+        trip19.setStatus(TRIP_STATUS.ARRIVED);
+        trip20.setStatus(TRIP_STATUS.ARRIVED);
+
 
         // Add all trips to tripHolder
         tripHolder.addItem(trip1.getID(), trip1);

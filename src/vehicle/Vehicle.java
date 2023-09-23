@@ -149,6 +149,9 @@ public abstract class Vehicle implements Serializable {
             // fuelNeeded depends on the type of vehicle
             fuelNeeded += (this instanceof Ship) ? container.getShipFuelConsumption() * currentPort.getDistance(destinationPort) : container.getTruckFuelConsumption() * currentPort.getDistance(destinationPort);
         }
+        System.out.println("Current fuel: " + currentFuel + " gallons");
+        System.out.println("Fuel needed: " + fuelNeeded + " gallons");
+
         if (currentFuel >= fuelNeeded) {
             // if it does, then move the vehicle to the destination port
             System.out.println(this.name + " moved from " + currentPort.getName() + " to " + destinationPort.getName());

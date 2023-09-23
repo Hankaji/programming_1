@@ -9,11 +9,11 @@ import java.util.regex.Pattern;
 
 public class IDGenerator {
     public static void main(String[] args) {
-        System.out.println(getNextAvailableID("sh", List.of("sh-1", "sh-69")));
+        System.out.println(getNextAvailableID("c", List.of("c-1", "c-69")));
     }
     public static String getNextAvailableID(String prefix, List<String> IDList) {
         // make a Regex pattern to get the number after the prefix with dash
-        Pattern pattern = Pattern.compile("sh-(\\d+)");
+        Pattern pattern = Pattern.compile(prefix + "-(\\d+)");
 
         List<String> sortedIds = getSortedIds(IDList, pattern);
 
@@ -22,7 +22,6 @@ public class IDGenerator {
             int next = Integer.parseInt(matcher.group(1)) + 1;
             return prefix + "-" + next;
         }
-
         return null;
     }
 
