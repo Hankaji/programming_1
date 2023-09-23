@@ -1,5 +1,7 @@
 package menu;
 
+import exceptions.UserLogoutException;
+
 import java.io.Serializable;
 
 public class MenuEvent implements Serializable {
@@ -18,7 +20,7 @@ public class MenuEvent implements Serializable {
         this.subMenu = subMenu;
     }
 
-    public void run() {
+    public void run(){
         action.run();
     }
 

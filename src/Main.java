@@ -1,4 +1,5 @@
 import data.Database;
+import exceptions.UserLogoutException;
 import menu.Menu;
 import menu.MenuEvent;
 import user.*;
@@ -23,7 +24,7 @@ public class Main {
     private static final Menu appMenu = new Menu();
     private static User loggedUser = null;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         // Setting up
         AccountDatabase.getInstance();
         deleteTripsAfter7Days();
@@ -39,7 +40,7 @@ public class Main {
         tripsToDelete.forEach(Trip::checkTripExistingTime);
     }
 
-    private static User displayHomePage() throws FileNotFoundException {
+    private static User displayHomePage() {
         System.out.println("COSC2081 GROUP ASSIGNMENT");
         System.out.println("CONTAINER PORT MANAGEMENT SYSTEM");
         System.out.println("Instructor: Mr. Minh Vu & Dr. Phong Ngo");
