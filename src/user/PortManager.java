@@ -3,7 +3,7 @@ import menu.Menu;
 import port.Port;
 
 public class PortManager extends User {
-    private final Port currentPort;
+    private Port currentPort;
 
 
     public PortManager(String name, String password, Port workingPort) {
@@ -14,6 +14,10 @@ public class PortManager extends User {
 
     public Port getCurrentPort() {
         return currentPort;
+    }
+
+    public void setCurrentPort(Port currentPort) {
+        this.currentPort = currentPort;
     }
 
     @Override

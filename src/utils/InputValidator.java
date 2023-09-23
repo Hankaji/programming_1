@@ -1,12 +1,13 @@
 package utils;
 
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.function.Function;
 
 public class InputValidator {
-    public static int validateInt() {
-        return validateInt((v) -> true, "", "Invalid input, please try again.");
+    public static int validateInt(String question) {
+        return validateInt((v) -> true, question, "Invalid input, please try again.");
     }
     public static int validateInt(Function<Integer, Boolean> function) {
         return validateInt(function, "", "Invalid input, please try again.");
@@ -39,8 +40,8 @@ public class InputValidator {
         return -1;
     }
 
-    public static double validateDouble() {
-        return validateDouble((v) -> true, "", "Invalid input, please try again.");
+    public static double validateDouble(String question) {
+        return validateDouble((v) -> true, question, "Invalid input, please try again.");
     }
 
     public static double validateDouble(Function<Double, Boolean> function) {
@@ -74,8 +75,8 @@ public class InputValidator {
         return -1;
     }
 
-    public static String validateString() {
-        return validateString((v) -> true, "", "Invalid input, please try again.");
+    public static String validateString(String question) {
+        return validateString((v) -> true, question, "Invalid input, please try again.");
     }
 
     public static String validateString(Function<String, Boolean> function) {
@@ -107,6 +108,13 @@ public class InputValidator {
         }
         System.out.println("Too many attempts. Exiting program.");
         return "-1";
+    }
+
+    public static boolean validateBoolean(String question) {
+        String answer = validateString((v) -> Arrays.asList("true", "false", "t", "f", "yes", "no", "y", "n").contains(v.toLowerCase()),
+                question + " (True / False): ",
+                "Invalid input. Please enter a valid boolean.");
+        return !answer.equals("-1") && Arrays.asList("true", "t", "yes", "y").contains(answer.toLowerCase());
     }
 
 }
