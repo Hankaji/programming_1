@@ -18,9 +18,9 @@ public class Menu implements Serializable {
         eventList = new ArrayList<>();
     }
 
-    public void addEvent(String name, Runnable action) {
-        eventList.add(new MenuEvent(name, action));
-    }
+//    public void addEvent(String name, Runnable action) {
+//        eventList.add(new MenuEvent(name, action));
+//    }
 
     public void addEvent(MenuEvent event) {
         eventList.add(event);
@@ -58,14 +58,14 @@ public class Menu implements Serializable {
 
     public void run() {
         Scanner input = new Scanner(System.in);
-        int choice = 1;
+        int choice;
         
         while (true) {
             display();
             System.out.print("Enter choice: ");
-            choice = utils.InputValidator.validateInt(i -> i >= -1 && i <= eventList.size());
+            choice = InputValidator.validateInt(i -> i >= -1 && i <= eventList.size());
             if (choice == -1) {
-                if (utils.InputValidator.validateBoolean("Are you sure you want to exit?")) {
+                if (InputValidator.validateBoolean("Are you sure you want to exit?")) {
                     input.close();
                     System.exit(0);
                 }

@@ -1,5 +1,7 @@
 package port;
 
+import data.Database;
+
 import java.io.Serializable;
 
 public class Port implements Serializable {
@@ -84,6 +86,16 @@ public class Port implements Serializable {
 
     public Boolean getLanding() {
         return landing;
+    }
+
+    public Double getCurrentStorage() {
+        Double currentStorage = 0.0;
+        for (Container container : Database.containerHolder.getMap().values()) {
+            if (container.getCurrentPort().equals(this) && !container.getLoaded()) {
+                currentStorage += container.getWeight();
+            }
+        }
+        return currentStorage;
     }
 
     public void setLanding(Boolean landing) {

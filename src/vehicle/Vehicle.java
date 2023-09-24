@@ -213,6 +213,12 @@ public abstract class Vehicle implements Serializable {
         }
         // use loop to get weight of each type of container
         for (Container container : containers) {
+            // check destination port's landing
+            if (!container.getDestinationPort().getLanding()) {
+                System.out.println("Cannot move " + this.name + " to " + destinationPort.getName() + " because it does not have landing capabilities");
+                System.out.println("Please unload containers and load them on a ship");
+                return;
+            }
             switch (container.getType()) {
                 case DRY_STORAGE -> dryStorageWeight += container.getWeight();
                 case OPEN_TOP -> openTopWeight += container.getWeight();
@@ -221,6 +227,8 @@ public abstract class Vehicle implements Serializable {
                 case LIQUID -> liquidWeight += container.getWeight();
             }
         }
+
+
         // calculate fuel needed
         fuelNeeded = this.getCurrentPort().getDistance(destinationPort) * (dryStorageWeight * dryStorageFuelConsumption + openTopWeight * openTopFuelConsumption + openSideWeight * openSideFuelConsumption + refrigeratedWeight * refrigeratedFuelConsumption + liquidWeight * liquidFuelConsumption);
 

@@ -63,7 +63,7 @@ public class DataPopulation {
         Port manchesterPort = new Port("p-1", "Manchester Port", 53.4808, 2.2426, 1000.0, true);
         Port londonPort = new Port("p-2", "London Port", 51.5074, 0.1278, 1000.0, true);
         Port liverpoolPort = new Port("p-3", "Liverpool Port", 53.4084, 2.9916, 1000.0, true);
-        Port greenwichPort = new Port("p-4", "Greenwich Port", 51.4826, 0.0077, 1000.0, true);
+        Port greenwichPort = new Port("p-4", "Greenwich Port", 51.4826, 0.0077, 1000.0, false);
         Port doverPort = new Port("p-5", "Dover Port", 51.1279, 1.3134, 1000.0, true);
         Port southamptonPort = new Port("p-6", "Southampton Port", 50.9097, 1.4044, 1000.0, true);
 
@@ -314,6 +314,8 @@ public class DataPopulation {
         Trip trip18 = new Trip("t-18", vehicleHolder.getMap().get("tr-16"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-6"), portHolder.getMap().get("p-1"));
         Trip trip19 = new Trip("t-19", vehicleHolder.getMap().get("tr-30"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-1"), portHolder.getMap().get("p-2"));
         Trip trip20 = new Trip("t-20", vehicleHolder.getMap().get("sh-8"), generateRandomDates(1, 3), generateRandomDates(4, 6), portHolder.getMap().get("p-2"), portHolder.getMap().get("p-3"));
+        // Testing
+        Trip trip21 = new Trip("t-21", vehicleHolder.getMap().get("tr-36"), generateRandomDates(1, 3), null, portHolder.getMap().get("p-3"), portHolder.getMap().get("p-4"));
 
 
         // set all trips to ARRIVED
@@ -337,7 +339,8 @@ public class DataPopulation {
         trip18.setStatus(TRIP_STATUS.ARRIVED);
         trip19.setStatus(TRIP_STATUS.ARRIVED);
         trip20.setStatus(TRIP_STATUS.ARRIVED);
-
+        // Testing
+        trip21.setStatus(TRIP_STATUS.ARRIVED);
 
         // Add all trips to tripHolder
         tripHolder.addItem(trip1.getID(), trip1);
@@ -360,6 +363,8 @@ public class DataPopulation {
         tripHolder.addItem(trip18.getID(), trip18);
         tripHolder.addItem(trip19.getID(), trip19);
         tripHolder.addItem(trip20.getID(), trip20);
+        // Testing
+        tripHolder.addItem(trip21.getID(), trip21);
     }
 
     public static Date generateRandomDates(int minDays, int maxDays) {

@@ -1,6 +1,8 @@
 package utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.function.Function;
@@ -15,6 +17,26 @@ public class InputValidator {
 
     public static int validateInt(Function<Integer, Boolean> function, String question) {
         return validateInt(function, question, "Invalid input, please try again.");
+    }
+
+    public static Date validateDate(String question) {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            try {
+                System.out.print(question);
+                String userInput = scanner.nextLine();
+
+                if (userInput.equals("-1")) return null;
+                Date date = (new SimpleDateFormat("dd/MM/yyyy")).parse(userInput);
+                if (date != null) return date;
+                System.out.println("Invalid input. Please enter a valid date.");
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid date.");
+                scanner.nextLine();
+            } catch (Exception e) {
+                System.out.println("Error occurred, please try again.");
+            }
+        }
     }
 
     public static int validateInt(Function<Integer, Boolean> function, String question, String errorMessage) {
