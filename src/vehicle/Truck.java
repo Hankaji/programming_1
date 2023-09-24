@@ -16,7 +16,7 @@ public abstract class Truck extends Vehicle {
         if (carriableContainers.contains(container.getType())) {
             super.loadContainer(container);
         } else {
-            System.out.println("Cannot load container " + container.getID() + " onto " + this.getName());
+            System.out.println("Cannot load container " + container.getID() + " onto " + this.getName() + ", wrong container type!");
         }
     }
 

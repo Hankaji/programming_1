@@ -149,6 +149,7 @@ public class Main {
         containersMenu.addEvent(addContainerEvent);
         containersMenu.addEvent(removeContainerEvent);
         containersMenu.addEvent(viewContainersEvent);
+        containersMenu.addEvent(viewAllContainersEvent, UserRoles.ADMIN);
         containersMenu.addEvent(editContainersEvent, UserRoles.ADMIN);
 
 
@@ -183,10 +184,9 @@ public class Main {
         appMenu.addEvent(unloadEvent);
         appMenu.addEvent(refuelEvent);
         appMenu.addEvent(fuelUsedEvent);
-        appMenu.addEvent(viewAllContainersEvent, UserRoles.ADMIN);
         appMenu.addEvent(containerWeightEvent);
         appMenu.addEvent(shipsInPortEvent);
-        appMenu.addEvent(viewAllTripsEvent);
+        appMenu.addEvent(viewAllTripsEvent, UserRoles.ADMIN);
         appMenu.addEvent(tripsInDayEvent);
         appMenu.addEvent(tripFromRangeEvent);
     }
@@ -990,7 +990,11 @@ public class Main {
             if(!InputValidator.validateBoolean("Do you want to load another container? (Y/N)")) break;
         }
         // move the vehicle to the destination port
-        vehicle.moveToPort(vehicle.getContainers().get(0).getDestinationPort());
+        try {
+            vehicle.moveToPort(vehicle.getContainers().get(0).getDestinationPort());
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("No containers loaded in the vehicle!");
+        }
     }
 
     private static void editPort() {

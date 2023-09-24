@@ -2,6 +2,7 @@ package vehicle;
 
 import data.Database;
 import port.*;
+import utils.IDGenerator;
 
 import java.io.Serializable;
 import java.util.List;
@@ -246,13 +247,13 @@ public abstract class Vehicle implements Serializable {
         }
 
         // create a trip
-        // get trip id by checking trip database
-        int tripID = Database.tripHolder.getMap().values().toArray().length;
-        String tripIDString =  "t-" + tripID;
-        Trip trip = new Trip(tripIDString, this, currentPort, destinationPort);
+        // get trip id by using idgenerator
+        String tripID = IDGenerator.getNextAvailableID("t", Database.tripHolder.getMap().keySet().stream().toList());
+
+        Trip trip = new Trip(tripID, this, currentPort, destinationPort);
         currentPort = null;
 
-        Database.tripHolder.addItem(tripIDString, trip);
+        Database.tripHolder.addItem(tripID, trip);
     }
 
     public void refuel() {
