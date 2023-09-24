@@ -293,18 +293,46 @@ public class Main {
 
         // get trips in port using for to check if the departure date/arrival date is in the date range
         List<Trip> tripsInRange = new ArrayList<>();
-        for (Trip trip : trips) {
-            try {
-                if (((trip.getDepartureDate().compareTo(startDate) >= 0 && trip.getDepartureDate().compareTo(endDate) <= 0)) || ((trip.getArrivalDate().compareTo(startDate) >= 0 && trip.getArrivalDate().compareTo(endDate) <= 0))) {
-                    tripsInRange.add(trip);
+//        check if this port is endport or startport
+        if (trips.stream().anyMatch(trip -> trip.getEndPort().getName().equals(port.getName()))) {
+            // if it is endport, check if the departure day is in the date range
+            for (Trip trip : trips) {
+                if (trip.getEndPort().getName().equals(port.getName())) {
+                    if (trip.getArrivalDate().getDay() - startDate.getDay() >= 0 && trip.getArrivalDate().getDay() - endDate.getDay() <= 0) {
+                        tripsInRange.add(trip);
+                    }
                 }
-            } catch (NullPointerException e) {
-                // catching null pointer exception when arrival date is null because it hasn't arrived yet
-                if (trip.getDepartureDate().compareTo(startDate) >= 0 && trip.getDepartureDate().compareTo(endDate) <= 0 ) {
-                    tripsInRange.add(trip);
+            }
+        } else {
+            // if it is startport, check if the arrival date is in the date range
+            for (Trip trip : trips) {
+                if (trip.getStartPort().getName().equals(port.getName())) {
+                    try {
+                        if (trip.getDepartureDate().getDay() - startDate.getDay() >= 0 && trip.getDepartureDate().getDay() - endDate.getDay() <= 0) {
+                            tripsInRange.add(trip);
+                        }
+                    } catch (NullPointerException e) {
+                        // catching null pointer exception when arrival date is null because it hasn't arrived yet
+                        if (trip.getDepartureDate().compareTo(startDate) >= 0 && trip.getDepartureDate().compareTo(endDate) <= 0) {
+                            tripsInRange.add(trip);
+                        }
+                    }
                 }
             }
         }
+
+//        for (Trip trip : trips) {
+//            try {
+//                if (((trip.getDepartureDate().compareTo(startDate) >= 0 && trip.getDepartureDate().compareTo(endDate) <= 0)) || ((trip.getArrivalDate().compareTo(startDate) >= 0 && trip.getArrivalDate().compareTo(endDate) <= 0))) {
+//                    tripsInRange.add(trip);
+//                }
+//            } catch (NullPointerException e) {
+//                // catching null pointer exception when arrival date is null because it hasn't arrived yet
+//                if (trip.getDepartureDate().compareTo(startDate) >= 0 && trip.getDepartureDate().compareTo(endDate) <= 0 ) {
+//                    tripsInRange.add(trip);
+//                }
+//            }
+//        }
 
 //        try {
 //            // filter by checking if the departure date/arrival date is in the date range
