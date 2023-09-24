@@ -48,8 +48,13 @@ public class Trip implements Serializable {
     public void checkTripExistingTime() {
         Date currentDate = new Date();
         // Get different between current date and departure date
-        long diff = currentDate.getTime() - arrivalDate.getTime();
+        long diff = 0;
+        try {
+            diff = currentDate.getTime() - arrivalDate.getTime();
 
+        } catch (NullPointerException e) {
+            return;
+        }
         // Get different in seconds
         long diffSeconds = diff / (1000 * 60 * 60 * 24);
 

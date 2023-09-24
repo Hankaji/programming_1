@@ -537,12 +537,10 @@ public class Main {
         // for each List, change status to ARRIVED, and set arrival date, set vehicle's current port to the port
         for (Trip trip : arrivingTrips) {
             trip.setArrivalDate();
-            Vehicle vehicle = trip.getVehicleUsed();
-            vehicle.setCurrentPort(port);
+            Database.vehicleHolder.getMap().get(trip.getVehicleUsed().getID()).setCurrentPort(port);
 
-            List<Container> containersToUpdate = vehicle.getContainers();
-            for (Container container : containersToUpdate) {
-                container.setCurrentPort(port);
+            for (Container container : trip.getVehicleUsed().getContainers()) {
+                Database.containerHolder.getMap().get(container.getID()).setCurrentPort(port);
             }
             trip.setStatus(TRIP_STATUS.ARRIVED);
             // log out vehicles arriving
