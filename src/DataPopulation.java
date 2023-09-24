@@ -63,7 +63,7 @@ public class DataPopulation {
         Port manchesterPort = new Port("p-1", "Manchester Port", 53.4808, 2.2426, 1000.0, true);
         Port londonPort = new Port("p-2", "London Port", 51.5074, 0.1278, 1000.0, true);
         Port liverpoolPort = new Port("p-3", "Liverpool Port", 53.4084, 2.9916, 1000.0, true);
-        Port greenwichPort = new Port("p-4", "Greenwich Port", 51.4826, 0.0077, 1000.0, true);
+        Port greenwichPort = new Port("p-4", "Greenwich Port", 51.4826, 0.0077, 1000.0, false);
         Port doverPort = new Port("p-5", "Dover Port", 51.1279, 1.3134, 1000.0, true);
         Port southamptonPort = new Port("p-6", "Southampton Port", 50.9097, 1.4044, 1000.0, true);
 
@@ -176,68 +176,68 @@ public class DataPopulation {
 
     private static void populateVehicleData() {
         // Create 12 Ships: String name, String id: sh-*, double currentFuel, double maxFuel, Port currentPort, double carryingCapacity in tons, List<Container> containers
-        Vehicle ship1 = new Ship("EA ship", "sh-1", 1000.0, 1000.0, portHolder.getMap().get("p-1"), 14.0, new ArrayList<>());
-        Vehicle ship2 = new Ship("Steam ship", "sh-2", 800.0, 1100.0, portHolder.getMap().get("p-2"), 12.0, new ArrayList<>());
-        Vehicle ship3 = new Ship("Sail ship", "sh-3", 900.0, 1200.0, portHolder.getMap().get("p-3"), 13.5, new ArrayList<>());
-        Vehicle ship4 = new Ship("Cargo ship", "sh-4", 800.0, 1000.0, portHolder.getMap().get("p-4"), 14.0, new ArrayList<>());
-        Vehicle ship5 = new Ship("Container ship", "sh-5", 870.0, 1200.0, portHolder.getMap().get("p-5"), 14.8, new ArrayList<>());
-        Vehicle ship6 = new Ship("Tanker ship", "sh-6", 640.0, 1000.0, portHolder.getMap().get("p-6"), 13.2, new ArrayList<>());
-        Vehicle ship7 = new Ship("Bulk carrier ship", "sh-7", 850.0, 1000.0, portHolder.getMap().get("p-1"), 3.3, new ArrayList<>());
-        Vehicle ship8 = new Ship("Ferry ship", "sh-8", 1000.0, 1200.0, portHolder.getMap().get("p-2"), 14.0, new ArrayList<>());
-        Vehicle ship9 = new Ship("Cruise ship", "sh-9", 1000.0, 1000.0, portHolder.getMap().get("p-3"), 17.3, new ArrayList<>());
-        Vehicle ship10 = new Ship("Fishing ship", "sh-10", 800.0, 1200.0, portHolder.getMap().get("p-4"), 9.6, new ArrayList<>());
-        Vehicle ship11 = new Ship("Research ship", "sh-11", 700.0, 1000.0, portHolder.getMap().get("p-5"), 10.4, new ArrayList<>());
-        Vehicle ship12 = new Ship("Tug ship", "sh-12", 800.0, 1000.0, portHolder.getMap().get("p-6"), 15.8, new ArrayList<>());
+        Vehicle ship1 = new Ship("EA ship", "sh-1", 4000.0, 4500.0, portHolder.getMap().get("p-1"), 14.0, new ArrayList<>());
+        Vehicle ship2 = new Ship("Steam ship", "sh-2", 4000.0, 4500.0, portHolder.getMap().get("p-2"), 12.0, new ArrayList<>());
+        Vehicle ship3 = new Ship("Sail ship", "sh-3", 4000.0, 4500.0, portHolder.getMap().get("p-3"), 13.5, new ArrayList<>());
+        Vehicle ship4 = new Ship("Cargo ship", "sh-4", 4000.0, 4500.0, portHolder.getMap().get("p-4"), 14.0, new ArrayList<>());
+        Vehicle ship5 = new Ship("Container ship", "sh-5", 4000.0, 4500.0, portHolder.getMap().get("p-5"), 14.8, new ArrayList<>());
+        Vehicle ship6 = new Ship("Tanker ship", "sh-6", 4000.0, 4500.0, portHolder.getMap().get("p-6"), 13.2, new ArrayList<>());
+        Vehicle ship7 = new Ship("Bulk carrier ship", "sh-7", 4000.0, 4500.0, portHolder.getMap().get("p-1"), 3.3, new ArrayList<>());
+        Vehicle ship8 = new Ship("Ferry ship", "sh-8", 4000.0, 4500.0, portHolder.getMap().get("p-2"), 14.0, new ArrayList<>());
+        Vehicle ship9 = new Ship("Cruise ship", "sh-9", 4000.0, 4500.0, portHolder.getMap().get("p-3"), 17.3, new ArrayList<>());
+        Vehicle ship10 = new Ship("Fishing ship", "sh-10", 4000.0, 4500.0, portHolder.getMap().get("p-4"), 9.6, new ArrayList<>());
+        Vehicle ship11 = new Ship("Research ship", "sh-11", 4000.0, 4500.0, portHolder.getMap().get("p-5"), 10.4, new ArrayList<>());
+        Vehicle ship12 = new Ship("Tug ship", "sh-12", 4000.0, 4500.0, portHolder.getMap().get("p-6"), 15.8, new ArrayList<>());
 
         // Create 6 trucks in each port, (2 basic trucks, 2 reefer trucks, 2 tanker trucks) (String name, String id tr-*, double currentFuel, double maxFuel, Port currentPort, double carryingCapacity in tons, List<Container> containers)
-        Vehicle truck1 = new BasicTruck("Basic Truck 1", "tr-1", 1000.0, 1000.0, portHolder.getMap().get("p-1"), 14.0, new ArrayList<>());
-        Vehicle truck2 = new BasicTruck("Basic Truck 2", "tr-2", 800.0, 1100.0, portHolder.getMap().get("p-1"), 12.0, new ArrayList<>());
-        Vehicle truck3 = new ReeferTruck("Reefer Truck 3", "tr-3", 900.0, 1200.0, portHolder.getMap().get("p-1"), 13.5, new ArrayList<>());
-        Vehicle truck4 = new ReeferTruck("Reefer Truck 4", "tr-4", 800.0, 1000.0, portHolder.getMap().get("p-1"), 14.0, new ArrayList<>());
-        Vehicle truck5 = new TankerTruck("Tanker Truck 5", "tr-5", 870.0, 1200.0, portHolder.getMap().get("p-1"), 14.8, new ArrayList<>());
-        Vehicle truck6 = new TankerTruck("Tanker Truck 6", "tr-6", 640.0, 1000.0, portHolder.getMap().get("p-1"), 13.2, new ArrayList<>());
-        Vehicle truck420 = new BasicTruck("Basic Truck 420", "tr-420", 100000000.0, 1000000000000.0, portHolder.getMap().get("p-1"), 14.0, new ArrayList<>());
+        Vehicle truck1 = new BasicTruck("Basic Truck 1", "tr-1", 2000.0, 2500.0, portHolder.getMap().get("p-1"), 14.0, new ArrayList<>());
+        Vehicle truck2 = new BasicTruck("Basic Truck 2", "tr-2", 2000.0, 2500.0, portHolder.getMap().get("p-1"), 12.0, new ArrayList<>());
+        Vehicle truck3 = new ReeferTruck("Reefer Truck 3", "tr-3", 2000.0, 2500.0, portHolder.getMap().get("p-1"), 13.5, new ArrayList<>());
+        Vehicle truck4 = new ReeferTruck("Reefer Truck 4", "tr-4", 2000.0, 2500.0, portHolder.getMap().get("p-1"), 14.0, new ArrayList<>());
+        Vehicle truck5 = new TankerTruck("Tanker Truck 5", "tr-5", 2000.0, 2500.0, portHolder.getMap().get("p-1"), 14.8, new ArrayList<>());
+        Vehicle truck6 = new TankerTruck("Tanker Truck 6", "tr-6", 2000.0, 2500.0, portHolder.getMap().get("p-1"), 13.2, new ArrayList<>());
+        Vehicle truck420 = new BasicTruck("Basic Truck 420", "tr-420", 2000.0, 2500.0, portHolder.getMap().get("p-1"), 14.0, new ArrayList<>());
 
-        // port 2
-        Vehicle truck7 = new BasicTruck("Basic Truck 7", "tr-7", 1000.0, 1000.0, portHolder.getMap().get("p-2"), 14.0, new ArrayList<>());
-        Vehicle truck8 = new BasicTruck("Basic Truck 8", "tr-8", 800.0, 1100.0, portHolder.getMap().get("p-2"), 12.0, new ArrayList<>());
-        Vehicle truck9 = new ReeferTruck("Reefer Truck 9", "tr-9", 900.0, 1200.0, portHolder.getMap().get("p-2"), 13.5, new ArrayList<>());
-        Vehicle truck10 = new ReeferTruck("Reefer Truck 10", "tr-10", 800.0, 1000.0, portHolder.getMap().get("p-2"), 14.0, new ArrayList<>());
-        Vehicle truck11 = new TankerTruck("Tanker Truck 11", "tr-11", 870.0, 1200.0, portHolder.getMap().get("p-2"), 14.8, new ArrayList<>());
-        Vehicle truck12 = new TankerTruck("Tanker Truck 12", "tr-12", 640.0, 1000.0, portHolder.getMap().get("p-2"), 13.2, new ArrayList<>());
+        // Port 2
+        Vehicle truck7 = new BasicTruck("Basic Truck 7", "tr-7", 2000.0, 2500.0, portHolder.getMap().get("p-2"), 14.0, new ArrayList<>());
+        Vehicle truck8 = new BasicTruck("Basic Truck 8", "tr-8", 2000.0, 2500.0, portHolder.getMap().get("p-2"), 12.0, new ArrayList<>());
+        Vehicle truck9 = new ReeferTruck("Reefer Truck 9", "tr-9", 2000.0, 2500.0, portHolder.getMap().get("p-2"), 13.5, new ArrayList<>());
+        Vehicle truck10 = new ReeferTruck("Reefer Truck 10", "tr-10", 2000.0, 2500.0, portHolder.getMap().get("p-2"), 14.0, new ArrayList<>());
+        Vehicle truck11 = new TankerTruck("Tanker Truck 11", "tr-11", 2000.0, 2500.0, portHolder.getMap().get("p-2"), 14.8, new ArrayList<>());
+        Vehicle truck12 = new TankerTruck("Tanker Truck 12", "tr-12", 2000.0, 2500.0, portHolder.getMap().get("p-2"), 13.2, new ArrayList<>());
 
-        // port 3
-        // Create 6 trucks in each port, (2 basic trucks, 2 reefer trucks, 2 tanker trucks) (String name, String id tr-*, double currentFuel 500 - 1500, double maxFuel 1000 - 1500, Port currentPort, double carryingCapacity in tons, List<Container> containers)
-        Vehicle truck13 = new BasicTruck("Basic truck 13", "tr-13", 780.0, 1000.0, portHolder.getMap().get("p-3"), 14.0, new ArrayList<>());
-        Vehicle truck14 = new BasicTruck("Basic truck 14", "tr-14", 980.0, 1500.0, portHolder.getMap().get("p-3"), 11.5, new ArrayList<>());
-        Vehicle truck15 = new ReeferTruck("Basic truck 15", "tr-15", 1080.0, 1200.0, portHolder.getMap().get("p-3"), 7.3, new ArrayList<>());
-        Vehicle truck16 = new ReeferTruck("Basic truck 16", "tr-16", 1200.0, 1100.0, portHolder.getMap().get("p-3"), 8.0, new ArrayList<>());
-        Vehicle truck17 = new TankerTruck("Basic truck 17", "tr-17", 980.0, 1400.0, portHolder.getMap().get("p-3"), 10.1, new ArrayList<>());
-        Vehicle truck18 = new TankerTruck("Basic truck 18", "tr-18", 1080.0, 1000.0, portHolder.getMap().get("p-3"), 12.0, new ArrayList<>());
+        // Port 3
+        Vehicle truck13 = new BasicTruck("Basic truck 13", "tr-13", 2500.0, 3000.0, portHolder.getMap().get("p-3"), 14.0, new ArrayList<>());
+        Vehicle truck14 = new BasicTruck("Basic truck 14", "tr-14", 3000.0, 3500.0, portHolder.getMap().get("p-3"), 11.5, new ArrayList<>());
+        Vehicle truck15 = new ReeferTruck("Basic truck 15", "tr-15", 2800.0, 3300.0, portHolder.getMap().get("p-3"), 7.3, new ArrayList<>());
+        Vehicle truck16 = new ReeferTruck("Basic truck 16", "tr-16", 3100.0, 3600.0, portHolder.getMap().get("p-3"), 8.0, new ArrayList<>());
+        Vehicle truck17 = new TankerTruck("Basic truck 17", "tr-17", 3400.0, 3900.0, portHolder.getMap().get("p-3"), 10.1, new ArrayList<>());
+        Vehicle truck18 = new TankerTruck("Basic truck 18", "tr-18", 2900.0, 3400.0, portHolder.getMap().get("p-3"), 12.0, new ArrayList<>());
 
         // Port 4
-        Vehicle truck19 = new BasicTruck("Reefer truck 19", "tr-19", 780.0, 1000.0, portHolder.getMap().get("p-4"), 14.0, new ArrayList<>());
-        Vehicle truck20 = new BasicTruck("Reefer truck 20", "tr-20", 980.0, 1500.0, portHolder.getMap().get("p-4"), 11.5, new ArrayList<>());
-        Vehicle truck21 = new ReeferTruck("Reefer truck 21", "tr-21", 1080.0, 1200.0, portHolder.getMap().get("p-4"), 7.3, new ArrayList<>());
-        Vehicle truck22 = new ReeferTruck("Reefer truck 22", "tr-22", 1200.0, 1100.0, portHolder.getMap().get("p-4"), 8.0, new ArrayList<>());
-        Vehicle truck23 = new TankerTruck("Reefer truck 23", "tr-23", 980.0, 1400.0, portHolder.getMap().get("p-4"), 10.1, new ArrayList<>());
-        Vehicle truck24 = new TankerTruck("Reefer truck 24", "tr-24", 1080.0, 1000.0, portHolder.getMap().get("p-4"), 12.0, new ArrayList<>());
+        Vehicle truck19 = new BasicTruck("Reefer truck 19", "tr-19", 2500.0, 3000.0, portHolder.getMap().get("p-4"), 14.0, new ArrayList<>());
+        Vehicle truck20 = new BasicTruck("Reefer truck 20", "tr-20", 3000.0, 3500.0, portHolder.getMap().get("p-4"), 11.5, new ArrayList<>());
+        Vehicle truck21 = new ReeferTruck("Reefer truck 21", "tr-21", 2800.0, 3300.0, portHolder.getMap().get("p-4"), 7.3, new ArrayList<>());
+        Vehicle truck22 = new ReeferTruck("Reefer truck 22", "tr-22", 3100.0, 3600.0, portHolder.getMap().get("p-4"), 8.0, new ArrayList<>());
+        Vehicle truck23 = new TankerTruck("Reefer truck 23", "tr-23", 3400.0, 3900.0, portHolder.getMap().get("p-4"), 10.1, new ArrayList<>());
+        Vehicle truck24 = new TankerTruck("Reefer truck 24", "tr-24", 2900.0, 3400.0, portHolder.getMap().get("p-4"), 12.0, new ArrayList<>());
 
         // Port 5
-        Vehicle truck25 = new BasicTruck("Basic truck 25", "tr-25", 780.0, 1000.0, portHolder.getMap().get("p-3"), 14.0, new ArrayList<>());
-        Vehicle truck26 = new BasicTruck("Basic truck 26", "tr-26", 980.0, 1500.0, portHolder.getMap().get("p-3"), 11.5, new ArrayList<>());
-        Vehicle truck27 = new BasicTruck("Basic truck 27", "tr-27", 1080.0, 1200.0, portHolder.getMap().get("p-3"), 7.3, new ArrayList<>());
-        Vehicle truck28 = new BasicTruck("Basic truck 28", "tr-28", 1200.0, 1100.0, portHolder.getMap().get("p-3"), 8.0, new ArrayList<>());
-        Vehicle truck29 = new BasicTruck("Basic truck 29", "tr-29", 980.0, 1400.0, portHolder.getMap().get("p-3"), 10.1, new ArrayList<>());
-        Vehicle truck30 = new BasicTruck("Basic truck 30", "tr-30", 1080.0, 1000.0, portHolder.getMap().get("p-3"), 12.0, new ArrayList<>());
+        Vehicle truck25 = new BasicTruck("Basic truck 25", "tr-25", 2500.0, 3000.0, portHolder.getMap().get("p-5"), 14.0, new ArrayList<>());
+        Vehicle truck26 = new BasicTruck("Basic truck 26", "tr-26", 3000.0, 3500.0, portHolder.getMap().get("p-5"), 11.5, new ArrayList<>());
+        Vehicle truck27 = new BasicTruck("Basic truck 27", "tr-27", 2800.0, 3300.0, portHolder.getMap().get("p-5"), 7.3, new ArrayList<>());
+        Vehicle truck28 = new BasicTruck("Basic truck 28", "tr-28", 3100.0, 3600.0, portHolder.getMap().get("p-5"), 8.0, new ArrayList<>());
+        Vehicle truck29 = new BasicTruck("Basic truck 29", "tr-29", 3400.0, 3900.0, portHolder.getMap().get("p-5"), 10.1, new ArrayList<>());
+        Vehicle truck30 = new BasicTruck("Basic truck 30", "tr-30", 2900.0, 3400.0, portHolder.getMap().get("p-5"), 12.0, new ArrayList<>());
 
         // Port 6
-        Vehicle truck31 = new BasicTruck("Basic truck 31", "tr-31", 780.0, 1000.0, portHolder.getMap().get("p-3"), 14.0, new ArrayList<>());
-        Vehicle truck32 = new BasicTruck("Basic truck 32", "tr-32", 980.0, 1500.0, portHolder.getMap().get("p-3"), 11.5, new ArrayList<>());
-        Vehicle truck33 = new ReeferTruck("Basic truck 33", "tr-33", 1080.0, 1200.0, portHolder.getMap().get("p-3"), 7.3, new ArrayList<>());
-        Vehicle truck34 = new ReeferTruck("Basic truck 34", "tr-34", 1200.0, 1100.0, portHolder.getMap().get("p-3"), 8.0, new ArrayList<>());
-        Vehicle truck35 = new TankerTruck("Basic truck 35", "tr-35", 980.0, 1400.0, portHolder.getMap().get("p-3"), 10.1, new ArrayList<>());
-        Vehicle truck36 = new TankerTruck("Basic truck 36", "tr-36", 1080.0, 1000.0, portHolder.getMap().get("p-3"), 12.0, new ArrayList<>());
+        Vehicle truck31 = new BasicTruck("Basic truck 31", "tr-31", 2500.0, 3000.0, portHolder.getMap().get("p-6"), 14.0, new ArrayList<>());
+        Vehicle truck32 = new BasicTruck("Basic truck 32", "tr-32", 3000.0, 3500.0, portHolder.getMap().get("p-6"), 11.5, new ArrayList<>());
+        Vehicle truck33 = new ReeferTruck("Basic truck 33", "tr-33", 2800.0, 3300.0, portHolder.getMap().get("p-6"), 7.3, new ArrayList<>());
+        Vehicle truck34 = new ReeferTruck("Basic truck 34", "tr-34", 3100.0, 3600.0, portHolder.getMap().get("p-6"), 8.0, new ArrayList<>());
+        Vehicle truck35 = new TankerTruck("Basic truck 35", "tr-35", 3400.0, 3900.0, portHolder.getMap().get("p-6"), 10.1, new ArrayList<>());
+        Vehicle truck36 = new TankerTruck("Basic truck 36", "tr-36", 2900.0, 3400.0, portHolder.getMap().get("p-6"), 12.0, new ArrayList<>());
+
 
 
         // add all vehicles to vehicleHolder

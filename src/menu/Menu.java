@@ -1,5 +1,6 @@
 package menu;
 
+import exceptions.UserLogoutException;
 import user.Authenticator;
 import user.UserRoles;
 import utils.Divider;
@@ -52,33 +53,34 @@ public class Menu implements Serializable {
             System.out.printf("%d)%-" + (width > 0 ? width : 1) + "s: %s%n", index, "", e.getDisplayName());
             index++;
         }
+        System.out.printf("%d)%-2s: %s%n", index, "", "Logout");
 
         Divider.printDivider();
     }
 
-    public void run() {
+    public boolean run() {
         Scanner input = new Scanner(System.in);
         int choice = 1;
         
         while (true) {
             display();
             System.out.print("Enter choice: ");
-            choice = utils.InputValidator.validateInt(i -> i >= -1 && i <= eventList.size());
+            choice = InputValidator.validateInt(i -> i >= -1 && i <= eventList.size() + 1);
             if (choice == -1) {
-                if (utils.InputValidator.validateBoolean("Are you sure you want to exit?")) {
+                if (InputValidator.validateBoolean("Are you sure you want to exit?")) {
                     input.close();
                     System.exit(0);
                 }
-
                 Divider.printDivider();
                 continue;
-
+            } else if (choice == eventList.size() + 1) {
+                // Return false to break the menu loop
+                return false;
             } else if (choice == 0) {
-                return;
-
+                // Return true so the menu can be displayed again
+                return true;
             }
-
-            eventList.get(choice - 1).run();
+            if (!eventList.get(choice - 1).run()) return false;
             Divider.printDivider();
         }
     }
