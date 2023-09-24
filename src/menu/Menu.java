@@ -58,7 +58,7 @@ public class Menu implements Serializable {
         Divider.printDivider();
     }
 
-    public void run() throws UserLogoutException {
+    public boolean run() {
         Scanner input = new Scanner(System.in);
         int choice = 1;
         
@@ -76,14 +76,16 @@ public class Menu implements Serializable {
                 continue;
 
             } else if (choice == eventList.size() + 1) {
-                throw new UserLogoutException();
+                // Return false to break the menu loop
+                return false;
 
             } else if (choice == 0) {
-                return;
+                // Return true so the menu can be displayed again
+                return true;
 
             }
 
-            eventList.get(choice - 1).run();
+            if (!eventList.get(choice - 1).run()) return false;
             Divider.printDivider();
         }
     }

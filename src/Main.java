@@ -21,18 +21,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {
-    private static final Menu appMenu = new Menu();
+    private static Menu appMenu;
     private static User loggedUser = null;
 
     public static void main(String[] args) {
         // Setting up
         AccountDatabase.getInstance();
         deleteTripsAfter7Days();
-        loggedUser = displayHomePage();
-        setUpMenu();
+        createShutdownHook();
 
         // Run the program
-        appMenu.run();
+        // While loop is used here because when user logout it returns false, which is inverted and becomes true, so the loop continues
+        do {
+            loggedUser = displayHomePage();
+            appMenu = new Menu();
+            setUpMenu();
+        } while(!appMenu.run());
     }
 
     private static void deleteTripsAfter7Days() {
@@ -77,25 +81,6 @@ public class Main {
     }
 
     private static void setUpMenu() {
-        // Creating a shutdown hook to save all holders
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            // Save all holders
-            System.out.println();
-            Database.portHolder.saveList("portsData.txt");
-            Database.containerHolder.saveList("containersData.txt");
-            Database.vehicleHolder.saveList("vehiclesData.txt");
-            Database.tripHolder.saveList("tripsData.txt");
-            Database.refuelHolder.saveList("refuelsData.txt");
-            try {
-
-
-                AccountDatabase.saveToFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }));
-        // End of shutdown hook
-
         // Creating sub menus
         Menu portsMenu = new Menu();
         Menu vehiclesMenu = new Menu();
@@ -205,6 +190,27 @@ public class Main {
                 tripFromRangeEvent)) {
             appMenu.addEvent(menuEvent);
         }
+    }
+
+    private static void createShutdownHook() {
+        // Creating a shutdown hook to save all holders
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            // Save all holders
+            System.out.println();
+            Database.portHolder.saveList("portsData.txt");
+            Database.containerHolder.saveList("containersData.txt");
+            Database.vehicleHolder.saveList("vehiclesData.txt");
+            Database.tripHolder.saveList("tripsData.txt");
+            Database.refuelHolder.saveList("refuelsData.txt");
+            try {
+
+
+                AccountDatabase.saveToFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }));
+        // End of shutdown hook
     }
 
     private static void fuelUsed() {
