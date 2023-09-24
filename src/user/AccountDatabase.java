@@ -52,7 +52,6 @@ public class AccountDatabase {
             return (Map<String, User>) in.readObject();
 
         } catch (IOException | ClassNotFoundException e) {
-//            e.printStackTrace();
             return null;
         }
     }
