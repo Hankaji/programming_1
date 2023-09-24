@@ -5,7 +5,6 @@ import user.*;
 import utils.Divider;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
 
@@ -16,7 +15,6 @@ import utils.IDGenerator;
 import utils.InputValidator;
 import vehicle.*;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
